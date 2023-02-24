@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_button.dart';
 
@@ -15,6 +14,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
   final _formKey = GlobalKey<FormState>();
   var phoneNumber = "";
   bool loading = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -110,20 +110,40 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                   setState(() {
                     loading = true;
                   });
-                  await FirebaseAuth.instance.verifyPhoneNumber(
+
+                  await auth.setSettings(
+                      appVerificationDisabledForTesting: true);
+                  await auth.verifyPhoneNumber(
                     phoneNumber: '+977$phoneNumber',
                     verificationCompleted: (PhoneAuthCredential credential) {},
                     verificationFailed: (FirebaseAuthException e) {},
                     codeSent: (String verificationId, int? resendToken) {
                       EnterPhoneScreen.verify = verificationId;
-
                       Navigator.pushNamed(context, '/otp');
-                      setState(() {
-                        loading = false;
-                      });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
                   );
+
+                  // await FirebaseAuth.instance.verifyPhoneNumber(
+                  //   phoneNumber: '+977$phoneNumber',
+                  //   verificationCompleted: (PhoneAuthCredential credential) {},
+                  //   verificationFailed: (FirebaseAuthException e) {},
+                  //   codeSent: (String verificationId, int? resendToken) {
+                  //     EnterPhoneScreen.verify = verificationId;
+                  //     setState(() {
+                  //       loading = false;
+                  //     });
+                  //     Navigator.pushNamed(context, '/otp');
+                  //   },
+                  //   codeAutoRetrievalTimeout: (String verificationId) {},
+                  // );
+                  // FirebaseAuth auth = FirebaseAuth.instance;
+                  // await auth.setSettings(
+                  //     appVerificationDisabledForTesting:
+                  //         true); // <-- here is the magic
+                  // await auth.verifyPhoneNumber(
+                  //   phoneNumber: phoneNumber,
+                  // );
                 }
               },
             ),
