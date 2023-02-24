@@ -18,7 +18,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
         child: Column(
           children: <Widget>[
             Image.asset(
-              'assets/images/1.png',
+              'assets/images/bike_car.png',
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +80,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
             CustomButton(
               text: 'Next',
               onPressed: () {
-                Navigator.pushNamed(context, '/signup');
+                Navigator.pushNamed(context, '/otp');
               },
             ),
           ],

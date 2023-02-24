@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:commute_nepal/registration/screen/EnterPhone_Screen.dart';
-import 'package:commute_nepal/registration/screen/Signup_screen.dart';
+import 'package:commute_nepal/registration/screen/OtpScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,9 +18,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/enter_phone',
       routes: {
-        '/': (context) => Signup_Screen(),
         // enter phone screen
         '/enter_phone': (context) => EnterPhoneScreen(),
+        // otP screen
+        '/otp': (context) => OtpScreen(),
       },
     );
   }
