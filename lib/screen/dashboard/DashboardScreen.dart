@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dropdown_alert/alert_controller.dart';
+import 'package:flutter_dropdown_alert/model/data_alert.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:snack/snack.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -12,17 +17,19 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   Completer<GoogleMapController> _controller = Completer();
-
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-
   static final CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
+
+  final bar = SnackBar(content: Text('Hello, world!'));
+
+  // Firebase Backend for rider verification
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 28.0, top: 5),
                   child: Text(
-                    "Welcome, Reetica!",
+                    "Welcome, Ajay!",
                     style: TextStyle(
                         color: Color.fromARGB(255, 13, 0, 0),
                         fontSize: 18,
@@ -66,7 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: TextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/choose_verf_category');
-                
                 },
                 child: const Icon(
                   Icons.account_circle_sharp,
@@ -109,13 +115,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ],
             ),
-            GoogleMap(
-              mapType: MapType.hybrid,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
+            // GoogleMap(
+            //   mapType: MapType.hybrid,
+            //   initialCameraPosition: _kGooglePlex,
+            //   onMapCreated: (GoogleMapController controller) {
+            //     _controller.complete(controller);
+            //   },
+            // ),
+            // elevated button
+            ElevatedButton(
+                onPressed: () {
+                  bar.show(context);
+                },
+                child: Text("data"))
 
             // location
           ],

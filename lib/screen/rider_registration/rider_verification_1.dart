@@ -185,9 +185,6 @@ class _RiderVerificationScreen1State extends State<RiderVerificationScreen1> {
                         },
                       ),
                     ),
-                    // In this example, the date is formatted manually. You can
-                    // use the intl package to format the value based on the
-                    // user's locale settings.
                     child: Text(
                       '${date.month}-${date.day}-${date.year}',
                       style:

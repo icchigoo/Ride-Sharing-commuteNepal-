@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../widgets/custom_button.dart';
+import 'package:snack/snack.dart';
 
 class EnterPhoneScreen extends StatefulWidget {
   const EnterPhoneScreen({super.key});
@@ -121,33 +122,16 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                     codeSent: (String verificationId, int? resendToken) {
                       EnterPhoneScreen.verify = verificationId;
                       Navigator.pushNamed(context, '/verify_otp');
+                      SnackBar(
+                              content: Text(
+                                  'OTP has been sent to +977 $phoneNumber'))
+                          .show(context);
                       setState(() {
                         loading = false;
                       });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
                   );
-
-                  // await FirebaseAuth.instance.verifyPhoneNumber(
-                  //   phoneNumber: '+977$phoneNumber',
-                  //   verificationCompleted: (PhoneAuthCredential credential) {},
-                  //   verificationFailed: (FirebaseAuthException e) {},
-                  //   codeSent: (String verificationId, int? resendToken) {
-                  //     EnterPhoneScreen.verify = verificationId;
-                  //     setState(() {
-                  //       loading = false;
-                  //     });
-                  //     Navigator.pushNamed(context, '/otp');
-                  //   },
-                  //   codeAutoRetrievalTimeout: (String verificationId) {},
-                  // );
-                  // FirebaseAuth auth = FirebaseAuth.instance;
-                  // await auth.setSettings(
-                  //     appVerificationDisabledForTesting:
-                  //         true); // <-- here is the magic
-                  // await auth.verifyPhoneNumber(
-                  //   phoneNumber: phoneNumber,
-                  // );
                 }
               },
             ),

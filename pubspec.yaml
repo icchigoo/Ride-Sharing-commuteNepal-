@@ -45,10 +45,12 @@ dependencies:
   firebase_auth: ^4.1.1
   firebase_core: ^2.1.1
   pinput: ^2.2.16
-  permission_handler: ^10.2.0
+  permission_handler: ^9.2.0
   image_picker: ^0.8.3
   google_maps_flutter: ^2.2.1
   cloud_firestore: ^4.0.4
+  flutter_dropdown_alert: ^1.0.6
+  snack: ^2.0.0
   
 
 dev_dependencies:
