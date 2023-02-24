@@ -3,12 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/model/personal_info.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -46,20 +45,19 @@ class _RiderVerificationScreen1State extends State<RiderVerificationScreen1> {
   DateTime _dateOfBirth = DateTime(2016, 10, 26);
   bool isLoading = false;
   UploadTask? uploadTask;
-  var urlDownload = ''.obs;
 
-  Future uploadImage() async {
-    final path = 'verification/profile/Profile_Verf_${DateTime.now()}.png';
-    final file = File(img!.path);
-    try {
-      final ref = firebase_storage.FirebaseStorage.instance.ref().child(path);
-      uploadTask = ref.putFile(file);
-      final snapshot = await uploadTask!.whenComplete(() => null);
-      urlDownload = (await snapshot.ref.getDownloadURL()) as RxString;
-    } catch (e) {
-      print('Failed to upload image $e');
-    }
-  }
+  // Future uploadImage() async {
+  //   final path = 'verification/profile/Profile_Verf_${DateTime.now()}.png';
+  //   final file = File(img!.path);
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance.ref().child(path);
+  //     uploadTask = ref.putFile(file);
+  //     final snapshot = await uploadTask!.whenComplete(() => null);
+  //     urlDownload = await snapshot.ref.getDownloadURL();
+  //   } catch (e) {
+  //     print('Failed to upload image $e');
+  //   }
+  // }
 
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -84,13 +82,23 @@ class _RiderVerificationScreen1State extends State<RiderVerificationScreen1> {
 
   // firebase registration code
   Future _personalVerification() async {
-    uploadImage();
+    String? urlDownload;
+    final path = 'verification/profile/Profile_Verf_${DateTime.now()}.png';
+    final file = File(img!.path);
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(file);
+      final snapshot = await uploadTask!.whenComplete(() => null);
+      urlDownload = await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Failed to upload image $e');
+    }
     final user = PersonalInfo(
       legal_firstname: _legalFirstname.text,
       legal_lastname: _legalLastname.text,
       dob: _dateOfBirth,
       address: _address.text,
-      profile_pic: urlDownload.value,
+      profile_pic: urlDownload,
     );
     final json = user.toJson();
 

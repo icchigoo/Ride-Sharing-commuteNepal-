@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/model/supporting_doc.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -60,85 +60,85 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
     }
   }
 
-  Future uploadImage() async {
-    final licenceFrontPath =
-        'verification/supporting_doc/licence_front_${DateTime.now()}.png';
-    final licenceBackPath =
-        'verification/supporting_doc/licence_back_${DateTime.now()}.png';
-    final billbook1Path =
-        'verification/supporting_doc/billbook_1_${DateTime.now()}.png';
-    final billbook2Path =
-        'verification/supporting_doc/billbook_2_${DateTime.now()}.png';
-    final billbook3Path =
-        'verification/supporting_doc/billbook_3_${DateTime.now()}.png';
-    final billbook4Path =
-        'verification/supporting_doc/billbook_4_${DateTime.now()}.png';
+  // Future uploadImage() async {
+  //   final licenceFrontPath =
+  //       'verification/supporting_doc/licence_front_${DateTime.now()}.png';
+  //   final licenceBackPath =
+  //       'verification/supporting_doc/licence_back_${DateTime.now()}.png';
+  //   final billbook1Path =
+  //       'verification/supporting_doc/billbook_1_${DateTime.now()}.png';
+  //   final billbook2Path =
+  //       'verification/supporting_doc/billbook_2_${DateTime.now()}.png';
+  //   final billbook3Path =
+  //       'verification/supporting_doc/billbook_3_${DateTime.now()}.png';
+  //   final billbook4Path =
+  //       'verification/supporting_doc/billbook_4_${DateTime.now()}.png';
 
-    final licenceFrontFile = File(licence_front!.path);
-    final licenceBackFile = File(licence_back!.path);
-    final billbook1File = File(billbook1!.path);
-    final billbook2File = File(billbook2!.path);
-    final billbook3File = File(billbook3!.path);
-    final billbook4File = File(billbook4!.path);
+  //   final licenceFrontFile = File(licence_front!.path);
+  //   final licenceBackFile = File(licence_back!.path);
+  //   final billbook1File = File(billbook1!.path);
+  //   final billbook2File = File(billbook2!.path);
+  //   final billbook3File = File(billbook3!.path);
+  //   final billbook4File = File(billbook4!.path);
 
-    try {
-      final ref_1 = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child(licenceFrontPath);
-      uploadTask = ref_1.putFile(licenceFrontFile);
-      final snapshot = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot.ref.getDownloadURL();
+  //   try {
+  //     final ref_1 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(licenceFrontPath);
+  //     uploadTask = ref_1.putFile(licenceFrontFile);
+  //     final snapshot = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot.ref.getDownloadURL();
 
-      final ref_2 = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child(licenceBackPath);
-      uploadTask = ref_2.putFile(licenceBackFile);
-      final snapshot2 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot2.ref.getDownloadURL();
-      setState(() {
-        url_licence_back = url_licence_back;
-      });
+  //     final ref_2 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(licenceBackPath);
+  //     uploadTask = ref_2.putFile(licenceBackFile);
+  //     final snapshot2 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot2.ref.getDownloadURL();
+  //     setState(() {
+  //       url_licence_back = url_licence_back;
+  //     });
 
-      final ref_3 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook1Path);
-      uploadTask = ref_3.putFile(billbook1File);
-      final snapshot3 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot3.ref.getDownloadURL();
-      setState(() {
-        url_billbook1 = url_billbook1;
-      });
+  //     final ref_3 =
+  //         firebase_storage.FirebaseStorage.instance.ref().child(billbook1Path);
+  //     uploadTask = ref_3.putFile(billbook1File);
+  //     final snapshot3 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot3.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook1 = url_billbook1;
+  //     });
 
-      final ref_4 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook2Path);
-      uploadTask = ref_4.putFile(billbook2File);
-      final snapshot4 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot4.ref.getDownloadURL();
-      setState(() {
-        url_billbook2 = url_billbook2;
-      });
+  //     final ref_4 =
+  //         firebase_storage.FirebaseStorage.instance.ref().child(billbook2Path);
+  //     uploadTask = ref_4.putFile(billbook2File);
+  //     final snapshot4 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot4.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook2 = url_billbook2;
+  //     });
 
-      final ref_5 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook3Path);
-      uploadTask = ref_5.putFile(billbook3File);
-      final snapshot5 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot5.ref.getDownloadURL();
-      setState(() {
-        url_billbook3 = url_billbook3;
-      });
+  //     final ref_5 =
+  //         firebase_storage.FirebaseStorage.instance.ref().child(billbook3Path);
+  //     uploadTask = ref_5.putFile(billbook3File);
+  //     final snapshot5 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot5.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook3 = url_billbook3;
+  //     });
 
-      final ref_6 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook4Path);
-      uploadTask = ref_6.putFile(billbook4File);
-      final snapshot6 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot6.ref.getDownloadURL();
-      setState(() {
-        url_billbook4 = url_billbook4;
-      });
-    } catch (e) {
-      SnackBar(content: Text("Failed to upload image!!")).show(context);
-      print('Failed to upload image $e');
-    }
-  }
+  //     final ref_6 =
+  //         firebase_storage.FirebaseStorage.instance.ref().child(billbook4Path);
+  //     uploadTask = ref_6.putFile(billbook4File);
+  //     final snapshot6 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot6.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook4 = url_billbook4;
+  //     });
+  //   } catch (e) {
+  //     SnackBar(content: Text("Failed to upload image!!")).show(context);
+  //     print('Failed to upload image $e');
+  //   }
+  // }
 
   Future _loadBackImage(ImageSource imageSource) async {
     try {
@@ -219,7 +219,77 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
 
   // firebase registration code
   Future _documentVerification() async {
-    uploadImage();
+    // uploadImage();
+    String? url_licence_front;
+    String? url_licence_back;
+    String? url_billbook1;
+    String? url_billbook2;
+    String? url_billbook3;
+    String? url_billbook4;
+
+    final licenceFrontPath =
+        'verification/supporting_doc/licence_front_${DateTime.now()}.png';
+    final licenceBackPath =
+        'verification/supporting_doc/licence_back_${DateTime.now()}.png';
+    final billbook1Path =
+        'verification/supporting_doc/billbook_1_${DateTime.now()}.png';
+    final billbook2Path =
+        'verification/supporting_doc/billbook_2_${DateTime.now()}.png';
+    final billbook3Path =
+        'verification/supporting_doc/billbook_3_${DateTime.now()}.png';
+    final billbook4Path =
+        'verification/supporting_doc/billbook_4_${DateTime.now()}.png';
+
+    final licenceFrontFile = File(licence_front!.path);
+    final licenceBackFile = File(licence_back!.path);
+    final billbook1File = File(billbook1!.path);
+    final billbook2File = File(billbook2!.path);
+    final billbook3File = File(billbook3!.path);
+    final billbook4File = File(billbook4!.path);
+
+    try {
+      final ref_1 = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child(licenceFrontPath);
+      uploadTask = ref_1.putFile(licenceFrontFile);
+      final snapshot = await uploadTask!.whenComplete(() => null);
+      url_licence_front = await snapshot.ref.getDownloadURL();
+
+      final ref_2 = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child(licenceBackPath);
+      uploadTask = ref_2.putFile(licenceBackFile);
+      final snapshot2 = await uploadTask!.whenComplete(() => null);
+      url_licence_back = await snapshot2.ref.getDownloadURL();
+
+      final ref_3 =
+          firebase_storage.FirebaseStorage.instance.ref().child(billbook1Path);
+      uploadTask = ref_3.putFile(billbook1File);
+      final snapshot3 = await uploadTask!.whenComplete(() => null);
+      url_billbook1 = await snapshot3.ref.getDownloadURL();
+
+      final ref_4 =
+          firebase_storage.FirebaseStorage.instance.ref().child(billbook2Path);
+      uploadTask = ref_4.putFile(billbook2File);
+      final snapshot4 = await uploadTask!.whenComplete(() => null);
+      url_billbook2 = await snapshot4.ref.getDownloadURL();
+
+      final ref_5 =
+          firebase_storage.FirebaseStorage.instance.ref().child(billbook3Path);
+      uploadTask = ref_5.putFile(billbook3File);
+      final snapshot5 = await uploadTask!.whenComplete(() => null);
+      url_billbook3 = await snapshot5.ref.getDownloadURL();
+
+      final ref_6 =
+          firebase_storage.FirebaseStorage.instance.ref().child(billbook4Path);
+      uploadTask = ref_6.putFile(billbook4File);
+      final snapshot6 = await uploadTask!.whenComplete(() => null);
+      url_billbook4 = await snapshot6.ref.getDownloadURL();
+    } catch (e) {
+      SnackBar(content: Text("Failed to upload image!!")).show(context);
+      print('Failed to upload image $e');
+    }
+
     final user = SupportingDoc(
       licence_number: _licenceController.text,
       licence_front: url_licence_front,

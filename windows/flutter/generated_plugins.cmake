@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
+  geolocator_windows
   permission_handler_windows
   smart_auth
 )

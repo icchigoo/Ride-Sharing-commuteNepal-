@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-import '../../widgets/custom_button.dart';
+import '../../../widgets/custom_button.dart';
 
 class RiderVerificationScreen2 extends StatefulWidget {
   const RiderVerificationScreen2({super.key});
@@ -29,7 +29,6 @@ class _RiderVerificationScreen2State extends State<RiderVerificationScreen2> {
   final _modelNoController = TextEditingController();
   final _numberPlateController = TextEditingController();
   UploadTask? uploadTask;
-  String? urlDownload;
   bool isLoading = false;
 
   Future<void> requestCameraPermission() async {
@@ -54,7 +53,26 @@ class _RiderVerificationScreen2State extends State<RiderVerificationScreen2> {
     }
   }
 
-  Future uploadImage() async {
+  // Future uploadImage() async {
+  //   final path = 'verification/vehicle/Vehicle_Verf_${DateTime.now()}.png';
+  //   final file = File(vehiclePhoto!.path);
+  //   try {
+  //     final ref = firebase_storage.FirebaseStorage.instance.ref().child(path);
+  //     uploadTask = ref.putFile(file);
+  //     final snapshot = await uploadTask!.whenComplete(() => null);
+  //     urlDownload = await snapshot.ref.getDownloadURL();
+  //     setState(() {
+  //       isLoading = false;
+  //       urlDownload = urlDownload;
+  //     });
+  //   } catch (e) {
+  //     print('Failed to upload image $e');
+  //   }
+  // }
+
+  Future _vehicleVerification() async {
+    // uploadImage();
+    String? urlDownload;
     final path = 'verification/vehicle/Vehicle_Verf_${DateTime.now()}.png';
     final file = File(vehiclePhoto!.path);
     try {
@@ -69,10 +87,6 @@ class _RiderVerificationScreen2State extends State<RiderVerificationScreen2> {
     } catch (e) {
       print('Failed to upload image $e');
     }
-  }
-
-  Future _vehicleVerification() async {
-    uploadImage();
     final vehicle = VehicleInfo(
       brand: _brandController.text,
       color: _colorController.text,

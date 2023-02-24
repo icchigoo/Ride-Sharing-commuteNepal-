@@ -1,14 +1,20 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:commute_nepal/global_variable.dart';
+import 'package:commute_nepal/widgets/google_maps_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dropdown_alert/alert_controller.dart';
-import 'package:flutter_dropdown_alert/model/data_alert.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
 import 'package:snack/snack.dart';
+
+import '../../dataprovider/appdata.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,31 +24,24 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  Completer<GoogleMapController> _controller = Completer();
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  final Completer<GoogleMapController> _controller = Completer();
+  static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(27.70539567242726, 85.32745790722771),
     zoom: 14.4746,
   );
-  static final CameraPosition _kLake = CameraPosition(
+  static const CameraPosition _kLake = CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
 
-  final bar = SnackBar(content: Text('Hello, world!'));
-
-  // Firebase Backend for rider verification
-
-  int _selectedIndex = 0;
-
-  List<Widget> lstWidget = [
-    const DashboardScreen(),
-    const DashboardScreen(),
-    const DashboardScreen(),
-  ];
+  final bar = const SnackBar(content: Text('Hello, world!'));
 
   @override
   Widget build(BuildContext context) {
+    String? firstaddress = Provider.of<AppData>(context).address1;
+    String? secondaddress = Provider.of<AppData>(context).address2;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -118,34 +117,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: Color.fromARGB(255, 13, 0, 0),
                     size: 28,
                   ),
-                  Text(
-                    "Dillibazar, Kathmandu",
-                    style: GoogleFonts.baloo2(
-                        color: const Color.fromARGB(255, 13, 0, 0),
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold),
+                  Flexible(
+                    child: Text(
+                      '$firstaddress, $secondaddress iiiiiiiiiiiiiiiiiiiiiiii',
+                      maxLines: 1,
+                      style: GoogleFonts.baloo2(
+                          // overflow: TextOverflow.ellipsis,
+                          color: const Color.fromARGB(255, 13, 0, 0),
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
-              Container(
-                height: 200,
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: _kGooglePlex,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                ),
+              SizedBox(
+                height: 210,
+                child: GoogleMapsScreen(controller: _controller),
               ),
 
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               // where do you want to go
               Row(
                 children: [
-                  Expanded(
-                    child: Container(
+                  const Expanded(
+                    child: SizedBox(
                       height: 50,
                       child: Icon(
                         Icons.location_on,
@@ -157,9 +154,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     flex: 5,
-                    child: Container(
-                      height: 55,
+                    child: SizedBox(
+                      height: 52,
                       child: TextField(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/SeachDestination',
+                              arguments: address1);
+                        },
                         style:
                             const TextStyle(fontSize: 16, color: Colors.black),
                         decoration: InputDecoration(
@@ -208,7 +209,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     withBackground: true,
                     backgroundColor: Colors.black,
                   ),
-                  icons: CupertinoIcons.settings,
+                  icons: CupertinoIcons.star_fill,
                   title: 'Saved Locations',
                   subtitle: "View your saved locations",
                 ),
@@ -219,7 +220,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     withBackground: true,
                     backgroundColor: Colors.black,
                   ),
-                  icons: CupertinoIcons.settings,
+                  icons: CupertinoIcons.location_circle_fill,
                   title: 'Set Pickup Location',
                   subtitle: "Mark your pickup location",
                 ),
@@ -229,26 +230,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 40), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.history, size: 40), label: 'History'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 40), label: 'Account'),
-        ],
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
-        currentIndex: _selectedIndex,
-        unselectedItemColor: Color.fromARGB(255, 194, 192, 192),
-        selectedItemColor: Color.fromARGB(255, 24, 24, 24),
-        elevation: 10,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }

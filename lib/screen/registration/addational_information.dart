@@ -210,10 +210,11 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'firstname': _firstnameController.text,
           'lastname': _lastnameController.text,
           'email': _emailController.text,
+          'uuid': user.uid,
         }
       });
 
-      Navigator.pushNamed(context, '/sopdoc3');
+      Navigator.pushNamed(context, '/navbar');
     } catch (e) {
       print(e.toString());
     }
@@ -247,7 +248,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'uid': user!.uid,
         },
       );
-      Navigator.pushNamed(context, '/dashboard');
+      Navigator.pushNamed(context, '/navbar');
     } on FirebaseAuthException catch (e) {
       print(e.message);
       throw e;

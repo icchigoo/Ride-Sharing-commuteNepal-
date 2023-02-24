@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../widgets/customcard.dart';
+import '../../../widgets/customcard.dart';
 
 class ChooseVehicleScreen extends StatefulWidget {
   const ChooseVehicleScreen({super.key});
