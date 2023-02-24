@@ -48,6 +48,7 @@ dependencies:
   permission_handler: ^10.2.0
   image_picker: ^0.8.3
   google_maps_flutter: ^2.2.1
+  cloud_firestore: ^4.0.4
   
 
 dev_dependencies:

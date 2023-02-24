@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.commute_nepal">
+    package="com.commute_nepal">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+
    <application
         android:label="commute_nepal"
         android:name="${applicationName}"

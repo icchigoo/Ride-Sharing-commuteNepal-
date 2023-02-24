@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +13,9 @@ class UserRegistrationScreen extends StatefulWidget {
 }
 
 class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
-  DateTime dateTime = DateTime.now();
+  TextEditingController _firstnameController = TextEditingController();
+  TextEditingController _lastnameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
   @override
@@ -63,6 +67,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                                 return null;
                               },
                               keyboardType: TextInputType.text,
+                              controller: _firstnameController,
                               decoration: InputDecoration(
                                 hintText: "Firstname",
                                 hintStyle:
@@ -93,6 +98,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                               },
 
                               keyboardType: TextInputType.text,
+                              controller: _lastnameController,
 
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
@@ -132,6 +138,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                             }
                             return null;
                           },
+                          controller: _emailController,
                           style: const TextStyle(
                               fontSize: 16, color: Colors.black),
                           decoration: InputDecoration(
@@ -154,6 +161,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                     loading: loading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        _createuser();
                         Navigator.pushNamed(context, "/dashboard");
                       }
                     })
@@ -163,5 +171,22 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
             ),
           ),
         ));
+  }
+
+  Future _createuser() async {
+    // add user data to cloud firestore
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
+        'firstname': _firstnameController.text,
+        'lastname': _lastnameController.text,
+        'email': _emailController.text,
+        'uid': user.uid,
+      });
+
+      Navigator.pushNamed(context, '/sopdoc3');
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
