@@ -1,7 +1,10 @@
+import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinput/pinput.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
@@ -11,6 +14,9 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  var code = "";
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +44,7 @@ class _OtpScreenState extends State<OtpScreen> {
               const Padding(
                 padding: EdgeInsets.only(top: 10.0, left: 3),
                 child: Text(
-                  "We have sent a 5 digits verification code to your phone number",
+                  "We have sent a 6 digits verification code to your phone number",
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -48,17 +54,14 @@ class _OtpScreenState extends State<OtpScreen> {
               const SizedBox(
                 height: 20,
               ),
-              OtpTextField(
-                numberOfFields: 5,
-                borderColor: const Color(0xFF512DA8),
-                //set to true to show as box or false to show as dash
-                showFieldAsBox: true,
-                //runs when a code is typed in
-                onCodeChanged: (String code) {
-                  //handle validation or checks here
+              Pinput(
+                length: 6,
+                showCursor: true,
+                onChanged: (value) {
+                  code = value;
                 },
-                //runs when every textfield is filled
-                onSubmit: (String verificationCode) {}, // end onSubmit
+                androidSmsAutofillMethod:
+                    AndroidSmsAutofillMethod.smsRetrieverApi,
               ),
               const SizedBox(height: 30),
               Text(
@@ -78,7 +81,27 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               CustomButton(
                 text: "Verify",
-                onPressed: () {},
+                loading: loading,
+                onPressed: () async {
+                  try {
+                    setState(() {
+                      loading = true;
+                    });
+                    PhoneAuthCredential credential =
+                        PhoneAuthProvider.credential(
+                            verificationId: EnterPhoneScreen.verify,
+                            smsCode: code);
+
+                    // Sign the user in (or link) with the credential
+                    await auth.signInWithCredential(credential);
+                    Navigator.pushNamed(context, '/user_registation');
+                    setState(() {
+                      loading = false;
+                    });
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                },
               )
             ],
           ),

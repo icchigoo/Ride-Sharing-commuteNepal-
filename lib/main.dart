@@ -1,11 +1,18 @@
-import 'package:commute_nepal/extra_useful_resources/registrationprocess.dart';
+import 'package:commute_nepal/screen/dashboard/DashboardScreen.dart';
 import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/screen/registration/OtpScreen.dart';
-import 'package:commute_nepal/screen/rider_registration/personalinformationscreen.dart';
-import 'package:commute_nepal/screen/rider_registration/ridermode.dart';
+import 'package:commute_nepal/screen/registration/addational_information.dart';
+import 'package:commute_nepal/screen/rider_registration/choose_vehicle_screen.dart';
+import 'package:commute_nepal/screen/rider_registration/rider_verification_1.dart';
+import 'package:commute_nepal/screen/rider_registration/rider_verification_2.dart';
+import 'package:commute_nepal/screen/rider_registration/supporting_doc_3.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  // intialize firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -17,15 +24,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/ridermode',
+      initialRoute: '/enter_phone',
       routes: {
-        // enter phone screen
-        '/enter_phone': (context) => EnterPhoneScreen(),
-        // otP screen
-        '/otp': (context) => OtpScreen(),
-        '/ridermode': (context) => RiderModeScreen(),
-        '/registrationprocess': (context) => RegistrationProcessScreen(),
-        '/personalinformation': (context) => PersonalInformationScreen(),
+        '/enter_phone': (context) => const EnterPhoneScreen(),
+        '/verify_otp': (context) => const OtpScreen(),
+        '/choose_verf_category': (context) => const ChooseVehicleScreen(),
+        // '/registrationprocess': (context) => const RegistrationProcessScreen(),
+        '/rider_verf_1': (context) => const RiderVerificationScreen1(),
+        '/user_registation': (context) => UserRegistrationScreen(),
+        '/rider_verf_3': (context) => const SupportingDoc3(),
+        '/rider_verf_2': (context) => const RiderVerificationScreen2(),
+        '/dashboard': (context) => const DashboardScreen(),
       },
     );
   }
