@@ -51,6 +51,7 @@ dependencies:
   cloud_firestore: ^4.0.4
   flutter_dropdown_alert: ^1.0.6
   snack: ^2.0.0
+  flutter_signin_button: ^2.0.0
   
 
 dev_dependencies:

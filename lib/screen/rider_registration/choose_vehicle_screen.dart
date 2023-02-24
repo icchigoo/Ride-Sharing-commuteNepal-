@@ -17,7 +17,7 @@ class _ChooseVehicleScreenState extends State<ChooseVehicleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
+      appBar: AppBar(
         title: const Text("Upgrade to Rider"),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
@@ -27,14 +27,14 @@ class _ChooseVehicleScreenState extends State<ChooseVehicleScreen> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            Padding(padding: const EdgeInsets.all(10),
-            child: const  Text(
-                  "Choose your type",
-                  style: TextStyle(
-                    fontSize: 29,
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                "Choose your type",
+                style: TextStyle(
+                  fontSize: 24,
                 ),
-            
+              ),
             ),
 
             CustomCard(

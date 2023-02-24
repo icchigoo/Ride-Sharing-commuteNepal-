@@ -3,6 +3,8 @@ import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UserRegistrationScreen extends StatefulWidget {
@@ -155,7 +157,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 CustomButton(
                     text: "Register",
                     loading: loading,
@@ -164,7 +166,25 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                         _createuser();
                         Navigator.pushNamed(context, "/dashboard");
                       }
-                    })
+                    }),
+                SizedBox(height: 10),
+                Text('OR',
+                    style: GoogleFonts.baloo2(
+                        fontSize: 20.0, fontWeight: FontWeight.bold)),
+
+                Divider(
+                  color: Colors.black,
+                  height: 10,
+                  thickness: 1,
+                  indent: 20,
+                  endIndent: 20,
+                ),
+
+                SignInButton(
+                  Buttons.Google,
+                  text: "Sign up with Google",
+                  onPressed: () {},
+                ),
 
                 // add buildDatePicker with fitting sized
               ],
