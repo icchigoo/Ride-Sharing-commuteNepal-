@@ -1,10 +1,12 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:commute_nepal/registration/screen/EnterPhone_Screen.dart';
 import 'package:commute_nepal/registration/screen/OtpScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  // intialize firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -19,9 +21,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/enter_phone',
       routes: {
         // enter phone screen
-        '/enter_phone': (context) => EnterPhoneScreen(),
+        '/enter_phone': (context) => const EnterPhoneScreen(),
         // otP screen
-        '/otp': (context) => OtpScreen(),
+        '/otp': (context) => const OtpScreen(),
       },
     );
   }

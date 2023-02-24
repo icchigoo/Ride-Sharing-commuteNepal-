@@ -39,6 +39,9 @@ dependencies:
   google_fonts: ^4.0.3
   flutter_otp_text_field: ^1.1.1
   page_transition: ^2.0.9
+  firebase_auth: ^4.1.1
+  firebase_core: ^2.1.1
+  pinput: ^2.2.16
   
 
 dev_dependencies:
