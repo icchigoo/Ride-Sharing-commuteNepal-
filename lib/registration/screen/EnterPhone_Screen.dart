@@ -120,6 +120,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                     codeSent: (String verificationId, int? resendToken) {
                       EnterPhoneScreen.verify = verificationId;
                       Navigator.pushNamed(context, '/otp');
+                      setState(() {
+                        loading = false;
+                      });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
                   );

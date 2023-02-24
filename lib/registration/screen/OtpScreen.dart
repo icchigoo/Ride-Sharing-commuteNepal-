@@ -94,7 +94,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
                     // Sign the user in (or link) with the credential
                     await auth.signInWithCredential(credential);
-                    Navigator.pushNamed(context, '/enter_phone');
+                    Navigator.pushNamed(context, '/addationalInformation');
                     setState(() {
                       loading = false;
                     });
