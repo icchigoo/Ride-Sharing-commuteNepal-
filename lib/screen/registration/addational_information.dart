@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserRegistrationScreen extends StatefulWidget {
   UserRegistrationScreen({Key? key}) : super(key: key);
@@ -19,7 +20,10 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  User? user = FirebaseAuth.instance.currentUser;
+  String userEmail = "";
   bool loading = false;
+  String? id = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,7 +176,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                     style: GoogleFonts.baloo2(
                         fontSize: 20.0, fontWeight: FontWeight.bold)),
 
-                Divider(
+                const Divider(
                   color: Colors.black,
                   height: 10,
                   thickness: 1,
@@ -183,7 +187,9 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                 SignInButton(
                   Buttons.Google,
                   text: "Sign up with Google",
-                  onPressed: () {},
+                  onPressed: () {
+                    signInwithGoogle();
+                  },
                 ),
 
                 // add buildDatePicker with fitting sized
@@ -197,16 +203,74 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
     // add user data to cloud firestore
     try {
       User? user = FirebaseAuth.instance.currentUser;
+      setState(() {
+        id = user!.uid;
+      });
       await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
         'firstname': _firstnameController.text,
         'lastname': _lastnameController.text,
         'email': _emailController.text,
-        'uid': user.uid,
+        'uid': user!.uid,
       });
 
-      Navigator.pushNamed(context, '/sopdoc3');
+      Navigator.pushNamed(context, '/enter_phone');
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  // Future<UserCredential> signInWithGoogle() async {
+  //   // Trigger the authentication flow
+  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  //   // Obtain the auth details from the request
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser!.authentication;
+
+  //   // Create a new credential
+  //   final credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+
+  //   userEmail = googleUser.email;
+
+  //   // Once signed in, return the UserCredential
+
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  // }
+  Future signInwithGoogle() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      await _auth.signInWithCredential(credential);
+      print("first name " +
+          _auth.currentUser!.displayName.toString().split(" ")[0]);
+      print("last name " +
+          _auth.currentUser!.displayName.toString().split(" ")[1]);
+      print("email" + _auth.currentUser!.email.toString());
+      print("uid" + user!.uid.toString());
+
+      await FirebaseFirestore.instance.collection('user').doc(user!.uid).set(
+        {
+          'firstname': _auth.currentUser!.displayName.toString().split(" ")[0],
+          'lastname': _auth.currentUser!.displayName.toString().split(" ")[1],
+          'email': _auth.currentUser!.email.toString(),
+          'uid': user!.uid,
+        },
+      );
+      Navigator.pushNamed(context, '/enter_phone');
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      throw e;
     }
   }
 }

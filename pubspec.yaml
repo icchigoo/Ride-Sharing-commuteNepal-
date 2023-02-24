@@ -52,6 +52,7 @@ dependencies:
   flutter_dropdown_alert: ^1.0.6
   snack: ^2.0.0
   flutter_signin_button: ^2.0.0
+  google_sign_in: ^5.4.2
   
 
 dev_dependencies:
