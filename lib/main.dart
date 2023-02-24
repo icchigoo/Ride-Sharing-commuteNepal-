@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/enter_phone',
+      initialRoute: '/dashboard',
       routes: {
         '/enter_phone': (context) => const EnterPhoneScreen(),
         '/verify_otp': (context) => const OtpScreen(),

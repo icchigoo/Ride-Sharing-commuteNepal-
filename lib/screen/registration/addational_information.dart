@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -16,9 +15,9 @@ class UserRegistrationScreen extends StatefulWidget {
 }
 
 class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
-  TextEditingController _firstnameController = TextEditingController();
-  TextEditingController _lastnameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _firstnameController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   User? user = FirebaseAuth.instance.currentUser;
   String userEmail = "";
@@ -67,7 +66,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your first name';
-                                } else if (value.length <= 5) {
+                                } else if (value.length <= 3) {
                                   return 'Please enter name longer than 5 characters';
                                 }
                                 return null;
@@ -207,38 +206,19 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
         id = user!.uid;
       });
       await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
-        'firstname': _firstnameController.text,
-        'lastname': _lastnameController.text,
-        'email': _emailController.text,
-        'uid': user!.uid,
+        'user_registration': {
+          'firstname': _firstnameController.text,
+          'lastname': _lastnameController.text,
+          'email': _emailController.text,
+        }
       });
 
-      Navigator.pushNamed(context, '/enter_phone');
+      Navigator.pushNamed(context, '/sopdoc3');
     } catch (e) {
       print(e.toString());
     }
   }
 
-  // Future<UserCredential> signInWithGoogle() async {
-  //   // Trigger the authentication flow
-  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-  //   // Obtain the auth details from the request
-  //   final GoogleSignInAuthentication googleAuth =
-  //       await googleUser!.authentication;
-
-  //   // Create a new credential
-  //   final credential = GoogleAuthProvider.credential(
-  //     accessToken: googleAuth.accessToken,
-  //     idToken: googleAuth.idToken,
-  //   );
-
-  //   userEmail = googleUser.email;
-
-  //   // Once signed in, return the UserCredential
-
-  //   return await FirebaseAuth.instance.signInWithCredential(credential);
-  // }
   Future signInwithGoogle() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -267,7 +247,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'uid': user!.uid,
         },
       );
-      Navigator.pushNamed(context, '/enter_phone');
+      Navigator.pushNamed(context, '/dashboard');
     } on FirebaseAuthException catch (e) {
       print(e.message);
       throw e;

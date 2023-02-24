@@ -40,8 +40,7 @@ class _CustomCardState extends State<CustomCard> {
           subtitleStyle: TextStyle(
             color: Colors.black,
             fontSize: 10,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Baloo2',
+          
           ),
         ),
       ],

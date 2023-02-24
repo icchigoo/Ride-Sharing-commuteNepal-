@@ -14,10 +14,11 @@ class ChooseVehicleScreen extends StatefulWidget {
 }
 
 class _ChooseVehicleScreenState extends State<ChooseVehicleScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+     appBar: AppBar(
         title: const Text("Upgrade to Rider"),
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
@@ -27,18 +28,18 @@ class _ChooseVehicleScreenState extends State<ChooseVehicleScreen> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: const Text(
-                "Choose your type",
-                style: TextStyle(
-                  fontSize: 24,
+            Padding(padding: const EdgeInsets.all(10),
+            child: const  Text(
+                  "Choose your type",
+                  style: TextStyle(
+                    fontSize: 24,
+                  ),
                 ),
-              ),
+            
             ),
 
             CustomCard(
-              title: "Moto",
+              title: "Motorcycle",
               subtitle: "Active your rider as moto",
               icon: Icons.two_wheeler,
               onPressed: () {
@@ -46,7 +47,7 @@ class _ChooseVehicleScreenState extends State<ChooseVehicleScreen> {
               },
             ),
             CustomCard(
-              title: "Car",
+              title: "Light Vehicle",
               subtitle: "Active your rider as cab",
               icon: Icons.local_taxi,
               onPressed: () {},

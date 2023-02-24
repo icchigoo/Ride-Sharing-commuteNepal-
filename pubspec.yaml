@@ -51,8 +51,17 @@ dependencies:
   cloud_firestore: ^4.0.4
   flutter_dropdown_alert: ^1.0.6
   snack: ^2.0.0
+  json_serializable: ^6.5.4
+  firebase_storage: ^11.0.5
+  path: ^1.8.2
+  bdd_widget_test: ^1.4.2
+  build_runner: ^2.3.2
+  get: ^4.6.5
   flutter_signin_button: ^2.0.0
   google_sign_in: ^5.4.2
+  fake_cloud_firestore: ^2.0.1
+  google_sign_in_mocks: ^0.2.1
+
   
 
 dev_dependencies:

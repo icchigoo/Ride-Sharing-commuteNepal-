@@ -14,7 +14,7 @@ class EnterPhoneScreen extends StatefulWidget {
 class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
   final _formKey = GlobalKey<FormState>();
   var phoneNumber = "";
-  bool loading = false;
+  bool isLoading = false;
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -105,29 +105,26 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
             ),
             CustomButton(
               text: 'Next',
-              loading: loading,
+              loading: isLoading,
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   setState(() {
-                    loading = true;
+                    isLoading = true;
                   });
 
                   await auth.setSettings(
                       appVerificationDisabledForTesting: true);
                   await auth.verifyPhoneNumber(
                     phoneNumber: '+977$phoneNumber',
-                    timeout: Duration(seconds: 60),
+                    timeout: const Duration(seconds: 60),
                     verificationCompleted: (PhoneAuthCredential credential) {},
                     verificationFailed: (FirebaseAuthException e) {},
                     codeSent: (String verificationId, int? resendToken) {
                       EnterPhoneScreen.verify = verificationId;
                       Navigator.pushNamed(context, '/verify_otp');
-                      SnackBar(
-                              content: Text(
-                                  'OTP has been sent to +977 $phoneNumber'))
-                          .show(context);
+                      SnackBar(content: Text('OTP has been sent to +977 $phoneNumber')).show(context);
                       setState(() {
-                        loading = false;
+                        isLoading = false;
                       });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},

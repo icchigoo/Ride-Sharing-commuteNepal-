@@ -94,12 +94,13 @@ class _OtpScreenState extends State<OtpScreen> {
 
                     // Sign the user in (or link) with the credential
                     await auth.signInWithCredential(credential);
-                    Navigator.pushNamed(context, '/user_registation');
-                    setState(() {
-                      loading = false;
-                    });
+                    if (auth.currentUser != null) {
+                      Navigator.pushNamed(context, '/user_registation');
+                    } else {
+                      Navigator.pushNamed(context, '/user_registation');
+                    }
                   } catch (e) {
-                    print(e.toString());
+                    print(e);
                   }
                 },
               )

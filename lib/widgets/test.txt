@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:commute_nepal/model/supporting_doc.dart';
-import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -11,8 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
-import 'package:snack/snack.dart';
+import 'package:roadway_core/model/supporting_doc.dart';
 
 class SupportingDoc3 extends StatefulWidget {
   const SupportingDoc3({super.key});
@@ -30,14 +27,6 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
   File? billbook2;
   File? billbook3;
   File? billbook4;
-  UploadTask? uploadTask;
-  String? url_licence_front;
-  String? url_licence_back;
-  String? url_billbook1;
-  String? url_billbook2;
-  String? url_billbook3;
-  String? url_billbook4;
-
   Future<void> requestCameraPermission() async {
     final cameraStatus = await Permission.camera.status;
     if (cameraStatus.isDenied) {
@@ -57,86 +46,6 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
       }
     } catch (e) {
       debugPrint('Failed to pick image $e');
-    }
-  }
-
-  Future uploadImage() async {
-    final licenceFrontPath =
-        'verification/supporting_doc/licence_front_${DateTime.now()}.png';
-    final licenceBackPath =
-        'verification/supporting_doc/licence_back_${DateTime.now()}.png';
-    final billbook1Path =
-        'verification/supporting_doc/billbook_1_${DateTime.now()}.png';
-    final billbook2Path =
-        'verification/supporting_doc/billbook_2_${DateTime.now()}.png';
-    final billbook3Path =
-        'verification/supporting_doc/billbook_3_${DateTime.now()}.png';
-    final billbook4Path =
-        'verification/supporting_doc/billbook_4_${DateTime.now()}.png';
-
-    final licenceFrontFile = File(licence_front!.path);
-    final licenceBackFile = File(licence_back!.path);
-    final billbook1File = File(billbook1!.path);
-    final billbook2File = File(billbook2!.path);
-    final billbook3File = File(billbook3!.path);
-    final billbook4File = File(billbook4!.path);
-
-    try {
-      final ref_1 = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child(licenceFrontPath);
-      uploadTask = ref_1.putFile(licenceFrontFile);
-      final snapshot = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot.ref.getDownloadURL();
-
-      final ref_2 = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child(licenceBackPath);
-      uploadTask = ref_2.putFile(licenceBackFile);
-      final snapshot2 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot2.ref.getDownloadURL();
-      setState(() {
-        url_licence_back = url_licence_back;
-      });
-
-      final ref_3 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook1Path);
-      uploadTask = ref_3.putFile(billbook1File);
-      final snapshot3 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot3.ref.getDownloadURL();
-      setState(() {
-        url_billbook1 = url_billbook1;
-      });
-
-      final ref_4 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook2Path);
-      uploadTask = ref_4.putFile(billbook2File);
-      final snapshot4 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot4.ref.getDownloadURL();
-      setState(() {
-        url_billbook2 = url_billbook2;
-      });
-
-      final ref_5 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook3Path);
-      uploadTask = ref_5.putFile(billbook3File);
-      final snapshot5 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot5.ref.getDownloadURL();
-      setState(() {
-        url_billbook3 = url_billbook3;
-      });
-
-      final ref_6 =
-          firebase_storage.FirebaseStorage.instance.ref().child(billbook4Path);
-      uploadTask = ref_6.putFile(billbook4File);
-      final snapshot6 = await uploadTask!.whenComplete(() => null);
-      url_licence_front = await snapshot6.ref.getDownloadURL();
-      setState(() {
-        url_billbook4 = url_billbook4;
-      });
-    } catch (e) {
-      SnackBar(content: Text("Failed to upload image!!")).show(context);
-      print('Failed to upload image $e');
     }
   }
 
@@ -215,11 +124,128 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
     }
   }
 
+  UploadTask? uploadTask;
+  String? url_licence_front;
+  String? url_licence_back;
+  String? url_billbook1;
+  String? url_billbook2;
+  String? url_billbook3;
+  String? url_billbook4;
+
+  // Future uploadImage() async {
+  //   final licence_front_path =
+  //       'verification/supporting_doc/licence_front_${DateTime.now()}.png';
+  //   print(
+  //       "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+  //   final licence_back_path =
+  //       'verification/supporting_doc/licence_back_${DateTime.now()}.png';
+  //   final billbook_1_path =
+  //       'verification/supporting_doc/billbook_1_${DateTime.now()}.png';
+  //   final billbook_2_path =
+  //       'verification/supporting_doc/billbook_2_${DateTime.now()}.png';
+  //   final billbook_3_path =
+  //       'verification/supporting_doc/billbook_3_${DateTime.now()}.png';
+  //   final billbook_4_path =
+  //       'verification/supporting_doc/billbook_4_${DateTime.now()}.png';
+
+  //   final licence_front_file = File(licence_front!.path);
+  //   final licence_back_file = File(licence_back!.path);
+  //   final billbook_1_file = File(billbook1!.path);
+  //   final billbook_2_file = File(billbook2!.path);
+  //   final billbook_3_file = File(billbook3!.path);
+  //   final billbook_4_file = File(billbook4!.path);
+
+  //   try {
+  //     final ref_1 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(licence_front_path);
+  //     uploadTask = ref_1.putFile(licence_front_file);
+  //     final snapshot = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot.ref.getDownloadURL();
+  //     setState(() {
+  //       url_licence_front = url_licence_front;
+  //       print(url_licence_front);
+  //     });
+
+  //     final ref_2 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(licence_back_path);
+  //     uploadTask = ref_2.putFile(licence_back_file);
+  //     final snapshot2 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot2.ref.getDownloadURL();
+  //     setState(() {
+  //       url_licence_back = url_licence_back;
+  //     });
+
+  //     final ref_3 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(billbook_1_path);
+  //     uploadTask = ref_3.putFile(billbook_1_file);
+  //     final snapshot3 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot3.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook1 = url_billbook1;
+  //     });
+
+  //     final ref_4 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(billbook_2_path);
+  //     uploadTask = ref_4.putFile(billbook_2_file);
+  //     final snapshot4 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot4.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook2 = url_billbook2;
+  //     });
+
+  //     final ref_5 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(billbook_3_path);
+  //     uploadTask = ref_5.putFile(billbook_3_file);
+  //     final snapshot5 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot5.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook3 = url_billbook3;
+  //     });
+
+  //     final ref_6 = firebase_storage.FirebaseStorage.instance
+  //         .ref()
+  //         .child(billbook_4_path);
+  //     uploadTask = ref_6.putFile(billbook_4_file);
+  //     final snapshot6 = await uploadTask!.whenComplete(() => null);
+  //     url_licence_front = await snapshot6.ref.getDownloadURL();
+  //     setState(() {
+  //       url_billbook4 = url_billbook4;
+  //     });
+  //   } catch (e) {
+  //     print('Failed to upload image $e');
+  //   }
+  // }
+
   bool isLoading = false;
+
+  Future uploadLicenceFront() async {
+    final path =
+        'verification/supporting_doc/licence_front_${DateTime.now()}.png';
+
+    final file = File(licence_front!.path);
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(file);
+      final snapshot = await uploadTask!.whenComplete(() => null);
+      url_licence_front = await snapshot.ref.getDownloadURL();
+      print(url_licence_front);
+      setState(() {
+        isLoading = false;
+        url_licence_front = url_licence_front;
+      });
+    } catch (e) {
+      print('Failed to upload licence front $e');
+    }
+  }
 
   // firebase registration code
   Future _documentVerification() async {
-    uploadImage();
+    uploadLicenceFront();
     final user = SupportingDoc(
       licence_number: _licenceController.text,
       licence_front: url_licence_front,
@@ -234,16 +260,13 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       final riderVerification =
-          FirebaseFirestore.instance.collection('user').doc(user!.uid);
+          FirebaseFirestore.instance.collection('user').doc("user!.uid");
 
       await riderVerification.update({
         'supporting_documents': json,
       });
-      setState(() {
-        isLoading = false;
-      });
-      SnackBar(content: Text("Document has been submitted for review."))
-          .show(context);
+      Navigator.pushNamed(context, '/rider_verf_2');
+      isLoading = false;
     } catch (e) {
       print(e.toString());
     }
@@ -367,17 +390,28 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
                       ),
                     ]),
                 const SizedBox(
-                  height: 10,
+                  height: 22,
                 ),
-                CustomButton(
-                  text: 'Submit for Verification',
-                  loading: isLoading,
-                  onPressed: () {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    _documentVerification();
-                  },
+                Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: MaterialButton(
+                    key: const ValueKey("verificatonbtn"),
+                    onPressed: () {
+                      _documentVerification();
+                    },
+                    child: const Text(
+                      "Request for verification",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
