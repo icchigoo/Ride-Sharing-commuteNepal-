@@ -60,6 +60,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 onChanged: (value) {
                   code = value;
                 },
+                androidSmsAutofillMethod:
+                    AndroidSmsAutofillMethod.smsRetrieverApi,
               ),
               const SizedBox(height: 30),
               Text(

@@ -1,12 +1,9 @@
 import 'package:commute_nepal/registration/screen/EnterPhone_Screen.dart';
 import 'package:commute_nepal/registration/screen/OtpScreen.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:commute_nepal/registration/screen/ridermode.dart';
 import 'package:flutter/material.dart';
 
-void main() async {
-  // intialize firebase
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   runApp(const MyApp());
 }
 
@@ -18,12 +15,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/enter_phone',
+      initialRoute: '/ridermode',
       routes: {
         // enter phone screen
-        '/enter_phone': (context) => const EnterPhoneScreen(),
+        '/enter_phone': (context) => EnterPhoneScreen(),
         // otP screen
-        '/otp': (context) => const OtpScreen(),
+        '/otp': (context) => OtpScreen(),
+        '/ridermode': (context) => RiderModeScreen(),
       },
     );
   }
