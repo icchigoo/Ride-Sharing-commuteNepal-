@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../widgets/customcard.dart';
 
 class RiderModeScreen extends StatefulWidget {
   const RiderModeScreen({super.key});
@@ -16,7 +19,7 @@ class _RiderModeScreenState extends State<RiderModeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Active your rider mode as:',
+        title: const Text('Rider Verification',
             style: TextStyle(
               color: Colors.black,
               fontSize: 20,
@@ -39,110 +42,47 @@ class _RiderModeScreenState extends State<RiderModeScreen> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Active rider mode as:',
+                      style: GoogleFonts.baloo2(
+                          fontSize: 20.0, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
             // User card
 
-            SettingsGroup(
-              items: [
-                SettingsItem(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/registrationprocess');
-                  },
-                  icons: Icons.directions_bike_outlined,
-                  iconStyle: IconStyle(
-                    backgroundColor: Colors.black,
-                  ),
-                  title: 'Moto',
-                  titleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo2',
-                  ),
-                  subtitle: "Active your rider mode as moto",
-                  subtitleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Baloo2',
-                  ),
-                ),
-              ],
+            CustomCard(
+              title: "Moto",
+              subtitle: "active your rider as moto",
+              icon: Icons.bike_scooter,
+              onPressed: () {
+                Navigator.pushNamed(context, '/personalinformation');
+              },
             ),
-            SettingsGroup(
-              items: [
-                SettingsItem(
-                  onTap: () {},
-                  icons: Icons.directions_car_outlined,
-                  iconStyle: IconStyle(
-                    backgroundColor: Colors.black,
-                  ),
-                  title: 'Car',
-                  titleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo2',
-                  ),
-                  subtitle: "Active your rider mode as cab",
-                  subtitleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Baloo2',
-                  ),
-                ),
-              ],
+            CustomCard(
+              title: "Car",
+              subtitle: "active your rider as cab",
+              icon: Icons.airport_shuttle,
+              onPressed: () {},
             ),
-            SettingsGroup(
-              items: [
-                SettingsItem(
-                  onTap: () {},
-                  icons: Icons.airport_shuttle,
-                  iconStyle: IconStyle(
-                    backgroundColor: Colors.black,
-                  ),
-                  title: 'Other Vehicle',
-                  titleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo2',
-                  ),
-                  subtitle: "Active your rider mode as service provider",
-                  subtitleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Baloo2',
-                  ),
-                ),
-              ],
+            CustomCard(
+              title: "Other Vehicle",
+              subtitle: "active rider as service provider",
+              icon: Icons.airport_shuttle,
+              onPressed: () {},
             ),
-            SettingsGroup(
-              items: [
-                SettingsItem(
-                  onTap: () {},
-                  icons: Icons.delivery_dining,
-                  iconStyle: IconStyle(
-                    backgroundColor: Colors.black,
-                  ),
-                  title: 'Courier',
-                  titleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Baloo2',
-                  ),
-                  subtitle: "Active your rider mode as courier service,",
-                  subtitleStyle: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'Baloo2',
-                  ),
-                ),
-              ],
+
+            CustomCard(
+              title: "Courier",
+              subtitle: "Active rider mode as courier service",
+              icon: Icons.delivery_dining,
+              onPressed: () {},
             ),
+
             // You can add a settings title
           ],
         ),

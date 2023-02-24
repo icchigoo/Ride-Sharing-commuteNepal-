@@ -1,6 +1,7 @@
+import 'package:commute_nepal/extra_useful_resources/registrationprocess.dart';
 import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/screen/registration/OtpScreen.dart';
-import 'package:commute_nepal/screen/rider_registration/registrationprocess.dart';
+import 'package:commute_nepal/screen/rider_registration/personalinformationscreen.dart';
 import 'package:commute_nepal/screen/rider_registration/ridermode.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/otp': (context) => OtpScreen(),
         '/ridermode': (context) => RiderModeScreen(),
         '/registrationprocess': (context) => RegistrationProcessScreen(),
+        '/personalinformation': (context) => PersonalInformationScreen(),
       },
     );
   }

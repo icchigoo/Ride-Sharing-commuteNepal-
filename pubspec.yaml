@@ -36,12 +36,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  google_fonts: ^4.0.3
+  google_fonts: ^3.0.1
   flutter_otp_text_field: ^1.1.1
   page_transition: ^2.0.9
-  firebase_auth: ^4.1.1
-  firebase_core: ^2.1.1
-  pinput: ^2.2.16
   babstrap_settings_screen: ^0.1.3
   bs_flutter_card: ^1.0.0
   bs_flutter_buttons: ^1.2.8
