@@ -115,6 +115,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                       appVerificationDisabledForTesting: true);
                   await auth.verifyPhoneNumber(
                     phoneNumber: '+977$phoneNumber',
+                    timeout: Duration(seconds: 60),
                     verificationCompleted: (PhoneAuthCredential credential) {},
                     verificationFailed: (FirebaseAuthException e) {},
                     codeSent: (String verificationId, int? resendToken) {

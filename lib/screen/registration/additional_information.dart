@@ -117,29 +117,31 @@ class _PersonalinformationState extends State<Personalinformation> {
                 const SizedBox(height: 10),
                 Column(
                   children: [
-                    SizedBox(
-                      width: 345,
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        // validate emailAddress
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your email address';
-                          } else if (!value.contains('@')) {
-                            return 'Please enter a valid email address';
-                          }
-                          return null;
-                        },
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
-                        decoration: InputDecoration(
-                          hintText: "Email",
-                          hintStyle: TextStyle(color: Colors.grey.shade700),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7),
-                            borderSide: BorderSide.none,
+                    Container(
+                      child: SizedBox(
+                        width: 345,
+                        child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          // validate emailAddress
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email address';
+                            } else if (!value.contains('@')) {
+                              return 'Please enter a valid email address';
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
+                          decoration: InputDecoration(
+                            hintText: "Email",
+                            hintStyle: TextStyle(color: Colors.grey.shade700),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
                           ),
-                          filled: true,
                         ),
                       ),
                     ),

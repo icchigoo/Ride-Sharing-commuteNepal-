@@ -1,4 +1,4 @@
-import 'package:commute_nepal/registration/screen/EnterPhone_Screen.dart';
+import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
