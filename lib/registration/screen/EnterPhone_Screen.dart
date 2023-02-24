@@ -14,6 +14,8 @@ class EnterPhoneScreen extends StatefulWidget {
 class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
   final _formKey = GlobalKey<FormState>();
   var phoneNumber = "";
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,8 +104,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
             ),
             CustomButton(
               text: 'Next',
+              loading: loading,
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
+                  setState(() {
+                    loading = true;
+                  });
                   await FirebaseAuth.instance.verifyPhoneNumber(
                     phoneNumber: '+977$phoneNumber',
                     verificationCompleted: (PhoneAuthCredential credential) {},
@@ -112,6 +118,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                       EnterPhoneScreen.verify = verificationId;
 
                       Navigator.pushNamed(context, '/otp');
+                      setState(() {
+                        loading = false;
+                      });
                     },
                     codeAutoRetrievalTimeout: (String verificationId) {},
                   );

@@ -2,6 +2,7 @@ import 'package:commute_nepal/registration/screen/EnterPhone_Screen.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
@@ -15,6 +16,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   var code = "";
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,8 +79,12 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               CustomButton(
                 text: "Verify",
+                loading: loading,
                 onPressed: () async {
                   try {
+                    setState(() {
+                      loading = true;
+                    });
                     PhoneAuthCredential credential =
                         PhoneAuthProvider.credential(
                             verificationId: EnterPhoneScreen.verify,
@@ -87,6 +93,9 @@ class _OtpScreenState extends State<OtpScreen> {
                     // Sign the user in (or link) with the credential
                     await auth.signInWithCredential(credential);
                     Navigator.pushNamed(context, '/enter_phone');
+                    setState(() {
+                      loading = false;
+                    });
                   } catch (e) {
                     print(e.toString());
                   }
