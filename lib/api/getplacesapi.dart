@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 // import 'package:najikkopasal/utils/sessionmanager.dart';
 
 class PlacesAPI {
+  // Fluture delay
   Future<PlacesResponse?> fetchplacesfromapi({String? search}) async {
     PlacesResponse? placesResponse;
     Response? response;
