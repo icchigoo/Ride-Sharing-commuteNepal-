@@ -73,6 +73,7 @@ dependencies:
   firebase_database: ^10.0.6
   sliding_switch: ^1.1.0
   animated_text_kit: ^4.2.2
+  awesome_notifications: ^0.7.4+1
 
   
 

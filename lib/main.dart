@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:commute_nepal/TestScreen.dart';
 import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/screen/dashboard/bottom_nav_bar.dart';
@@ -18,6 +19,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  AwesomeNotifications().initialize(
+    'resource://drawable/launcher',
+    [
+      NotificationChannel(
+        channelGroupKey: 'basic_channel_group',
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notificcation channel for basic tests ',
+        defaultColor: const Color(0XFF9D50DD),
+        importance: NotificationImportance.Max,
+        ledColor: Colors.white,
+        channelShowBadge: true,
+      ),
+    ],
+  );
   // intialize firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -34,7 +50,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/test_screen',
         routes: {
           '/enter_phone': (context) => const EnterPhoneScreen(),
           '/verify_otp': (context) => const OtpScreen(),
