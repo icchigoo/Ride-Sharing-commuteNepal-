@@ -22,7 +22,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   User? user = FirebaseAuth.instance.currentUser;
   String userEmail = "";
-  bool loading = false;
+  bool isloading = false;
   String? id = "";
   @override
   Widget build(BuildContext context) {
@@ -164,11 +164,17 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                 SizedBox(height: 10),
                 CustomButton(
                     text: "Register",
-                    loading: loading,
+                    loading: isloading,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isloading = true;
+                        });
                         _createuser();
                         Navigator.pushNamed(context, "/dashboard");
+                        setState(() {
+                          isloading = false;
+                        });
                       }
                     }),
                 SizedBox(height: 10),
@@ -205,6 +211,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       setState(() {
         id = user!.uid;
+        isloading = true;
       });
       await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
         'user_information': {
@@ -228,6 +235,9 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
       newUserRef.set(userMap);
 
       Navigator.pushNamed(context, '/dashboard');
+      setState(() {
+        isloading = false;
+      });
     } catch (e) {
       print(e.toString());
     }

@@ -37,4 +37,10 @@ class AppData extends ChangeNotifier {
     totalFare = totalfare.truncate().toString();
     notifyListeners();
   }
+
+  String? username;
+  void SetName(String name) {
+    username = name;
+    notifyListeners();
+  }
 }

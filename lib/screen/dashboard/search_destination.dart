@@ -1,12 +1,18 @@
 // ignore_for_file: sort_child_properties_last
 
 import 'dart:async';
+import 'dart:io';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/api/get_directions.dart';
+import 'package:commute_nepal/api/getcurrentuserinfo.dart';
 import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/model/address.dart';
 import 'package:commute_nepal/model/directiondetails.dart';
 import 'package:commute_nepal/model/places_model.dart';
+import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:commute_nepal/widgets/location_list_tile.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +30,14 @@ class SeachDestination extends StatefulWidget {
   State<SeachDestination> createState() => _SeachDestinationState();
 }
 
-class _SeachDestinationState extends State<SeachDestination> {
+class _SeachDestinationState extends State<SeachDestination>
+    with TickerProviderStateMixin {
   List<Features> lstplaces = [];
   final Completer<GoogleMapController> _controller = Completer();
   TextEditingController seach_destination = new TextEditingController();
   bool isLoading = false;
+  double rideBottonSheet = 0;
+  double searchSheet = 50;
 
   // initial location of the map view
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -52,7 +61,7 @@ class _SeachDestinationState extends State<SeachDestination> {
   LatLng _sourceLocation = LatLng(0.0, 0.0);
   LatLng _destinationLocation = LatLng(0.0, 0.0);
 
-  DirectionDetails? tripDirectionDetails = DirectionDetails();
+  DirectionDetails tripDirectionDetails = DirectionDetails();
 
   // get current location and set marker
   void getCurrentPositon() async {
@@ -146,17 +155,81 @@ class _SeachDestinationState extends State<SeachDestination> {
     });
   }
 
+  // void createRidequest() {
+  //   DatabaseReference rideRef =
+  //       FirebaseDatabase.instance.ref().child('riderequest').push();
+
+  //   // var pickupaddress = Provider.of<AppData>(context).pickUpAddress;
+  //   // var destinationaddress = Provider.of<AppData>(context).address1;
+  //   // String? pername = Provider.of<AppData>(context).username;
+
+  //   Map pickupMap = {
+  //     "latitude": "laal",
+  //     "longitude": "lolo",
+  //   };
+  //   Map destinationMap = {
+  //     "latitude": "laal",
+  //     "longitude": "lolo",
+  //   };
+
+  //   Map riderMap = {
+  //     'created_at': DateTime.now().toString(),
+  //     'rider_name': "nabin",
+  //     'pickup_address': "kalopul",
+  //     'destination_address': "softwarica",
+  //     'location': pickupMap,
+  //     'destination': destinationMap,
+  //     'payment_method': 'cash',
+  //     'driver_id': "waiting"
+  //   };
+  //   rideRef.set(riderMap);
+  // }
+  void createRidequest() {
+    DatabaseReference rideRef =
+        FirebaseDatabase.instance.ref().child('riderequest').push();
+
+    var pickupaddress =
+        Provider.of<AppData>(context, listen: false).pickUpAddress;
+    var destinationaddress =
+        Provider.of<AppData>(context, listen: false).destinationAddress;
+    String? pername = Provider.of<AppData>(context, listen: false).username;
+
+    Map pickupMap = {
+      "latitude": pickupaddress!.latitude,
+      "longitude": pickupaddress.longitude,
+    };
+    Map destinationMap = {
+      "latitude": destinationaddress!.latitude,
+      "longitude": destinationaddress.longitude,
+    };
+
+    Map riderMap = {
+      'created_at': DateTime.now().toString(),
+      'rider_name': pername,
+      'pickup_address': pickupaddress.placeName,
+      'destination_address': destinationaddress.placeName,
+      'location': pickupMap,
+      'destination': destinationMap,
+      'payment_method': 'cash',
+      'driver_id': "waiting"
+    };
+    rideRef.set(riderMap);
+  }
+
   // initializing the state
   @override
   void initState() {
     // getPolyPoints();
-    getCurrentPositon();
-    getDirection();
+
     super.initState();
     String apiKey = 'AIzaSyDoR83pkKYmuS6nHWU-Fk4F2uCd2K5ZV0g';
     googlePlace = GooglePlace(apiKey);
     startFocusNode = FocusNode();
     endFocusNode = FocusNode();
+    getCurrentPositon();
+    CurrentUser.getCurrentUser(context);
+
+    // getDirection();
   }
 
   List<LatLng> polylineCoordinates = [];
@@ -169,6 +242,21 @@ class _SeachDestinationState extends State<SeachDestination> {
     }
   }
 
+  void showSheet() async {
+    _showbootomModel(context);
+
+    setState(() {
+      searchSheet = 0;
+    });
+  }
+
+  // void getPrice() {
+  //   String val = HelpherMethods.estimatedFare(tripDirectionDetails);
+
+  //   print("VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  //   print(val);
+  // }
+
   @override
   Widget build(BuildContext context) {
     String? address = Provider.of<AppData>(context).address1;
@@ -178,7 +266,6 @@ class _SeachDestinationState extends State<SeachDestination> {
     print(address);
 
     TextEditingController pickup = new TextEditingController();
-    // final args = ModalRoute.of(context)!.settings.arguments;
 
     return Scaffold(
       body: Stack(
@@ -247,7 +334,7 @@ class _SeachDestinationState extends State<SeachDestination> {
                   CupertinoSearchTextField(
                     controller: seach_destination,
                     focusNode: endFocusNode,
-                    autofocus: true,
+                    autofocus: false,
                     onChanged: (value) {
                       setState(() {
                         if (value.isNotEmpty) {
@@ -315,7 +402,7 @@ class _SeachDestinationState extends State<SeachDestination> {
                           seach_destination.text =
                               predictions[index].description.toString();
                           predictions = [];
-
+                          getDirection();
                           hideKeyword(context);
                         });
                       }
@@ -325,23 +412,27 @@ class _SeachDestinationState extends State<SeachDestination> {
           ),
 
           Positioned(
-            child: SizedBox(
-              height: 50,
-              width: 320,
-              child: ElevatedButton(
-                onPressed: () {
-                  getDirection();
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeIn,
+              child: Container(
+                height: searchSheet,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showSheet();
 
-                  _showbootomModel(context);
-                },
-                child: Text(
-                  "Confirm Pickup Location",
-                  style: GoogleFonts.baloo2(color: Colors.white, fontSize: 20),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0),
+                    // _showbootomModel(context);
+                  },
+                  child: Text(
+                    "Confirm Pickup Location",
+                    style:
+                        GoogleFonts.baloo2(color: Colors.white, fontSize: 20),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0.0),
+                    ),
                   ),
                 ),
               ),
@@ -349,6 +440,81 @@ class _SeachDestinationState extends State<SeachDestination> {
             bottom: 0,
             left: 0,
             right: 0,
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedSize(
+              duration: const Duration(milliseconds: 500),
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 15.0,
+                        spreadRadius: 0.5,
+                        offset: Offset(
+                          0.7,
+                          0.7,
+                        ),
+                      ),
+                    ]),
+                height: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: 250,
+                        child: TextLiquidFill(
+                          text: 'Requesting the Ride ...',
+                          waveColor: Color.fromARGB(255, 12, 219, 60),
+                          boxBackgroundColor:
+                              Color.fromARGB(255, 255, 255, 255),
+                          textStyle: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          boxHeight: 40.0,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      //  circlur button
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            width: 1.0,
+                            color: Color.fromARGB(221, 0, 0, 0),
+                          ),
+                        ),
+                        child: Icon(Icons.close, size: 25),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Text("Cancel the ride"),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
 
           // create botton sheet for car with price and cash and otional payment
@@ -363,7 +529,7 @@ class _SeachDestinationState extends State<SeachDestination> {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20),
           ),
@@ -408,7 +574,7 @@ class _SeachDestinationState extends State<SeachDestination> {
                                   : ""),
                               Text((tripDirectionDetails != null)
                                   ? HelpherMethods.estimatedFare(
-                                      tripDirectionDetails!)
+                                      tripDirectionDetails)
                                   : ""),
                             ],
                           ),
@@ -439,7 +605,13 @@ class _SeachDestinationState extends State<SeachDestination> {
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  CustomButton(
+                      text: "Confirm Ride",
+                      loading: isLoading,
+                      onPressed: () {
+                        createRidequest();
+                      })
                 ],
               ),
             ),

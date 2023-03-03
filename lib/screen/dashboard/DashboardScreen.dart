@@ -1,4 +1,5 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:commute_nepal/api/getcurrentuserinfo.dart';
 import 'package:commute_nepal/global_variable.dart';
 import 'package:commute_nepal/widgets/google_maps_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,11 +37,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       zoom: 19.151926040649414);
 
   final bar = const SnackBar(content: Text('Hello, world!'));
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CurrentUser.getCurrentUser(context);
+  }
 
   @override
   Widget build(BuildContext context) {
     String? firstaddress = Provider.of<AppData>(context).address1;
     String? secondaddress = Provider.of<AppData>(context).address2;
+    String? username = Provider.of<AppData>(context).username;
 
     return Scaffold(
       appBar: AppBar(
@@ -58,11 +66,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.only(top: 30.0, bottom: 20, left: 8),
           child: Container(
             child: Row(
-              children: const [
+              children: [
                 Padding(
                   padding: EdgeInsets.only(left: 28.0, top: 5),
                   child: Text(
-                    "Welcome, Sarina!",
+                    "Welcome, $username",
                     style: TextStyle(
                         color: Color.fromARGB(255, 13, 0, 0),
                         fontSize: 18,

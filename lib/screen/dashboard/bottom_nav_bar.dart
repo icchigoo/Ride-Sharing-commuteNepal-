@@ -1,4 +1,5 @@
 import 'package:commute_nepal/screen/dashboard/DashboardScreen.dart';
+import 'package:commute_nepal/screen/profile/profilescreen.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
@@ -14,7 +15,7 @@ class _NavbarState extends State<Navbar> {
   List<Widget> lstWidget = [
     const DashboardScreen(),
     const DashboardScreen(),
-    const DashboardScreen(),
+    const ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {

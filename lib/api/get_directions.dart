@@ -3,6 +3,9 @@ import 'package:commute_nepal/model/directiondetails.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HelpherMethods {
+  // fetch user data form user collection
+  // and return user data
+
   static Future<DirectionDetails?> getDirectionDetails(
       LatLng startPosition, LatLng endPosition) async {
     String url =

@@ -87,11 +87,11 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
     Geofire.setLocation(
         userId!, _currentLocation.latitude, _currentLocation.longitude);
 
-    trigRequestRef = FirebaseFirestore.instance.collection('user').doc(userId);
-    trigRequestRef!.set("waiting");
+    // trigRequestRef = FirebaseFirestore.instance.collection('user').doc(userId);
+    // trigRequestRef!.set("waiting");
 
     // onvalue change
-    trigRequestRef!.snapshots().listen((event) {});
+    // trigRequestRef!.snapshots().listen((event) {});
   }
 
   void _getLocatonLiveUpdates() {

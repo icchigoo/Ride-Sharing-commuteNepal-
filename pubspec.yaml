@@ -72,6 +72,7 @@ dependencies:
   flutter_geofire: ^2.0.3
   firebase_database: ^10.0.6
   sliding_switch: ^1.1.0
+  animated_text_kit: ^4.2.2
 
   
 
