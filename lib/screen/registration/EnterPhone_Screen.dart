@@ -69,6 +69,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                       height: 55,
                       margin: const EdgeInsets.only(left: 0, right: 23),
                       child: TextFormField(
+                        maxLength: 10,
                         // validator phone number
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -122,7 +123,10 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                     codeSent: (String verificationId, int? resendToken) {
                       EnterPhoneScreen.verify = verificationId;
                       Navigator.pushNamed(context, '/verify_otp');
-                      SnackBar(content: Text('OTP has been sent to +977 $phoneNumber')).show(context);
+                      SnackBar(
+                              content: Text(
+                                  'OTP has been sent to +977 $phoneNumber'))
+                          .show(context);
                       setState(() {
                         isLoading = false;
                       });

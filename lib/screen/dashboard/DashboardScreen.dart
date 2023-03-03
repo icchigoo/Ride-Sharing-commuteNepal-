@@ -1,4 +1,6 @@
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:commute_nepal/global_variable.dart';
+import 'package:commute_nepal/widgets/google_maps_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -8,7 +10,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+
 import 'package:snack/snack.dart';
+
+import '../../dataprovider/appdata.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -31,98 +37,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final bar = const SnackBar(content: Text('Hello, world!'));
 
-  // get  firstname form collection of user from firestore
-
-  // Firebase Backend for rider verification
-
-  final int _selectedIndex = 0;
-
-  List<Widget> lstWidget = [
-    const DashboardScreen(),
-    const DashboardScreen(),
-    const DashboardScreen(),
-  ];
-  List<Placemark> placemarks = [];
-  String? address1;
-  String? address2;
-
-  // get current location
-  void getCurrentPositon() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      print("permission denied forever");
-      Future<LocationPermission> asked = Geolocator.requestPermission();
-    } else {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-      // get name of the location
-      _getAddress(currentPosition);
-
-      _markers.add(
-        Marker(
-          markerId: const MarkerId("1"),
-          position: LatLng(currentPosition.latitude, currentPosition.longitude),
-          infoWindow: const InfoWindow(title: "Current Location"),
-        ),
-      );
-      CameraPosition cameraPosition = CameraPosition(
-          target: LatLng(currentPosition.latitude, currentPosition.longitude),
-          zoom: 14);
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-
-      setState(() {});
-      print(currentPosition.latitude.toString());
-      print(currentPosition.longitude.toString());
-    }
-  }
-
-  // get location name
-  Future<void> _getAddress(Position position) async {
-    print("HElllllllllllllllllllllllllllllllllllllllllllll");
-    print(position);
-    try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      address1 = placemarks[0].locality;
-      address2 = placemarks[0].country;
-    } catch (e) {
-      print('this is the error $e');
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getCurrentPositon();
-  }
-
-  // marker for current location
-  final List<Marker> _markers = <Marker>[
-    const Marker(
-      markerId: MarkerId('1'),
-      position: LatLng(27.70539567242726, 85.32745790722771),
-      infoWindow: InfoWindow(title: 'Current Location'),
-      icon: BitmapDescriptor.defaultMarker,
-    )
-  ];
-
   @override
   Widget build(BuildContext context) {
+    String? firstaddress = Provider.of<AppData>(context).address1;
+    String? secondaddress = Provider.of<AppData>(context).address2;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.only(top: 20.0, bottom: 20),
-          child: Container(
-            child: const Icon(
-              Icons.menu,
-              color: Color.fromARGB(255, 13, 0, 0),
-              size: 30,
-            ),
-          ),
+          padding: const EdgeInsets.only(top: 20.0, left: 20),
+          child: Switch(
+              value: false,
+              onChanged: (value) {
+                Navigator.pushNamed(context, "/rider_dashboard");
+              }),
         ),
         title: Padding(
           padding: const EdgeInsets.only(top: 30.0, bottom: 20, left: 8),
@@ -185,27 +115,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     color: Color.fromARGB(255, 13, 0, 0),
                     size: 28,
                   ),
-                  Text(
-                    '$address1, $address2',
-                    style: GoogleFonts.baloo2(
-                        color: const Color.fromARGB(255, 13, 0, 0),
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold),
+                  Flexible(
+                    child: Text(
+                      '$firstaddress, $secondaddress',
+                      maxLines: 1,
+                      style: GoogleFonts.baloo2(
+                          // overflow: TextOverflow.ellipsis,
+                          color: const Color.fromARGB(255, 13, 0, 0),
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
               SizedBox(
                 height: 210,
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  myLocationButtonEnabled: true,
-                  myLocationEnabled: true,
-                  initialCameraPosition: _kGooglePlex,
-                  // markers: Set<Marker>.of(_markers),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                ),
+                child: GoogleMapsScreen(controller: _controller),
               ),
 
               const SizedBox(
@@ -230,6 +155,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: SizedBox(
                       height: 52,
                       child: TextField(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/SeachDestination',
+                              arguments: address1);
+                        },
                         style:
                             const TextStyle(fontSize: 16, color: Colors.black),
                         decoration: InputDecoration(
@@ -252,23 +181,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 color: Color.fromARGB(255, 228, 228, 228),
                 thickness: 1,
               ),
-
-              //  CustomCard(
-              //   title: "Saved Locations",
-              //   subtitle: "click to view your saved locations",
-              //   icon: Icons.star,
-              //   onPressed: () {
-              //     Navigator.pushNamed(context, '/rider_verf_1');
-              //   },
-              // ),
-              // CustomCard(
-              //   title: "Saved Locations",
-              //   subtitle: "click to view your saved locations",
-              //   icon: Icons.star,
-              //   onPressed: () {
-              //     Navigator.pushNamed(context, '/rider_verf_1');
-              //   },
-              // ),
 
               SettingsGroup(items: [
                 SettingsItem(

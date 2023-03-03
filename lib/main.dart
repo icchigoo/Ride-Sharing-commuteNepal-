@@ -1,4 +1,8 @@
+import 'package:commute_nepal/TestScreen.dart';
+import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/screen/dashboard/bottom_nav_bar.dart';
+import 'package:commute_nepal/screen/dashboard/places_g.dart';
+import 'package:commute_nepal/screen/dashboard/search_destination.dart';
 import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/screen/registration/OtpScreen.dart';
 import 'package:commute_nepal/screen/registration/addational_information.dart';
@@ -6,9 +10,10 @@ import 'package:commute_nepal/screen/registration/rider_registration/choose_vehi
 import 'package:commute_nepal/screen/registration/rider_registration/rider_verification_1.dart';
 import 'package:commute_nepal/screen/registration/rider_registration/rider_verification_2.dart';
 import 'package:commute_nepal/screen/registration/rider_registration/supporting_doc_3.dart';
-import 'package:commute_nepal/screen/wallet/walletfirstscreen.dart';
+import 'package:commute_nepal/screen/rider_section/rider_dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   // intialize firebase
@@ -23,21 +28,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/walletfirstscreen',
-      routes: {
-        '/enter_phone': (context) => const EnterPhoneScreen(),
-        '/verify_otp': (context) => const OtpScreen(),
-        '/choose_verf_category': (context) => const ChooseVehicleScreen(),
-        // '/registrationprocess': (context) => const RegistrationProcessScreen(),
-        '/rider_verf_1': (context) => const RiderVerificationScreen1(),
-        '/user_registation': (context) => UserRegistrationScreen(),
-        '/rider_verf_3': (context) => const SupportingDoc3(),
-        '/rider_verf_2': (context) => const RiderVerificationScreen2(),
-        '/dashboard': (context) => const Navbar(),
-        '/walletfirstscreen': (context) => const WalletFirstScreen(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/enter_phone',
+        routes: {
+          '/enter_phone': (context) => const EnterPhoneScreen(),
+          '/verify_otp': (context) => const OtpScreen(),
+          '/choose_verf_category': (context) => const ChooseVehicleScreen(),
+          // '/registrationprocess': (context) => const RegistrationProcessScreen(),
+          '/rider_verf_1': (context) => const RiderVerificationScreen1(),
+          '/user_registation': (context) => UserRegistrationScreen(),
+          '/rider_verf_3': (context) => const SupportingDoc3(),
+          '/rider_verf_2': (context) => const RiderVerificationScreen2(),
+          '/dashboard': (context) => Navbar(),
+          '/SeachDestination': (context) => const SeachDestination(),
+          '/SearchScreen': (context) => SearchScreen(),
+          '/test_screen': (context) => const TestScreen(),
+
+          // rider dashboard
+          '/rider_dashboard': (context) => const RiderDashboardScreen(),
+        },
+      ),
     );
   }
 }

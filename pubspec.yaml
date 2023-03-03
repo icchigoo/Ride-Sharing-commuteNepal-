@@ -68,6 +68,10 @@ dependencies:
   google_place: ^0.4.7
   provider: ^6.0.4
   geocoding: ^2.0.5
+  slider_button: ^2.0.0
+  flutter_geofire: ^2.0.3
+  firebase_database: ^10.0.6
+  sliding_switch: ^1.1.0
 
   
 

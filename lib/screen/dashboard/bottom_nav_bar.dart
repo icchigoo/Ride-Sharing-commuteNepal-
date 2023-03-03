@@ -2,7 +2,7 @@ import 'package:commute_nepal/screen/dashboard/DashboardScreen.dart';
 import 'package:flutter/material.dart';
 
 class Navbar extends StatefulWidget {
-  const Navbar({Key? key}) : super(key: key);
+  Navbar({Key? key}) : super(key: key);
 
   @override
   State<Navbar> createState() => _NavbarState();

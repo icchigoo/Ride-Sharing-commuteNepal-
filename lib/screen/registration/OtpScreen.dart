@@ -116,10 +116,15 @@ class _OtpScreenState extends State<OtpScreen> {
                           .get();
                       print("DOC IDDDDDDDDDDD");
                       print(doc.exists);
+                      // print name from doc using uuid
+                      // final name = doc.get('name');
+                      // print(name);
+
                       if (doc.exists && auth.currentUser!.uid == doc.id) {
+                        // ignore: use_build_context_synchronously
                         Navigator.pushNamed(
                           context,
-                          '/navbar',
+                          '/dashboard',
                         );
                         setState(() {
                           loading = false;
@@ -140,6 +145,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     setState(() {
                       loading = false;
                     });
+                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(

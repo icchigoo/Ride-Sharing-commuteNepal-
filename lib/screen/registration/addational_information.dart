@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -206,15 +207,27 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
         id = user!.uid;
       });
       await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
-        'user_registration': {
-          'firstname': _firstnameController.text,
-          'lastname': _lastnameController.text,
+        'user_information': {
+          'firstName': _firstnameController.text,
+          'lastName': _lastnameController.text,
           'email': _emailController.text,
           'uuid': user.uid,
+          'isRider': true,
         }
       });
 
-      Navigator.pushNamed(context, '/navbar');
+      DatabaseReference newUserRef =
+          FirebaseDatabase.instance.reference().child('user/${user.uid}');
+      Map userMap = {
+        'firstName': _firstnameController.text,
+        'lastName': _lastnameController.text,
+        'email': _emailController.text,
+        'uuid': user.uid,
+        'isRider': true,
+      };
+      newUserRef.set(userMap);
+
+      Navigator.pushNamed(context, '/dashboard');
     } catch (e) {
       print(e.toString());
     }
@@ -248,7 +261,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'uid': user!.uid,
         },
       );
-      Navigator.pushNamed(context, '/navbar');
+      Navigator.pushNamed(context, '/dashboard');
     } on FirebaseAuthException catch (e) {
       print(e.message);
       throw e;

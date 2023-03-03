@@ -665,3 +665,22 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
     );
   }
 }
+---------------------------------------
+SliderButton(
+                height: 60,
+                width: 225,
+                action: () {
+                  _goOnline();
+                },
+                label: const Text(
+                  "Slide to go online",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 155, 22, 22),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17),
+                ),
+                icon: const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+              )
