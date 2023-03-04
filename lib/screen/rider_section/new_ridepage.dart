@@ -121,13 +121,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
                           Text(
                             "Rabi Lamichanne",
                             style: TextStyle(
-                                fontSize: 25,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.black),
                           ),
                           Padding(
                             padding: EdgeInsets.only(right: 10),
-                            child: Icon(Icons.call),
+                            child: Icon(Icons.wifi_calling_3),
                           )
                         ],
                       ),
@@ -137,43 +137,77 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
                       // row pick up and drop off
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.location_on,
-                              color: Colors.green,
-                            ),
+                          // ICons
+                          Icon(
+                            Icons.location_on,
+                            size: 18,
+                            color: Colors.red,
                           ),
+
+                          // text
                           Text(
-                            "Pickup: Kathmandu, Nepal",
+                            'PICKUP LOCATION',
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
+                      // pickup location
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, top: 5),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Kapan, Kathmandu',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+
                       SizedBox(
-                        height: 6,
+                        height: 10,
                       ),
+
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Icon(
-                              Icons.location_on,
-                              color: Colors.red,
-                            ),
+                          // ICons
+                          Icon(
+                            Icons.location_on,
+                            size: 18,
+                            color: Colors.green,
                           ),
+                          // text
                           Text(
-                            "Drop off: Bhaktapur, Nepal",
+                            'DROPOFF LOCATION',
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
                           ),
                         ],
+                      ),
+                      // pickup location
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, top: 5),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Kalimati, Kathmandu",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(
                         height: 5,

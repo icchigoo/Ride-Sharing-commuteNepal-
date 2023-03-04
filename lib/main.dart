@@ -4,6 +4,7 @@ import 'package:commute_nepal/api/push_notification.dart';
 import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/screen/dashboard/bottom_nav_bar.dart';
 import 'package:commute_nepal/screen/dashboard/places_g.dart';
+import 'package:commute_nepal/screen/dashboard/rider_button_navbar.dart';
 import 'package:commute_nepal/screen/dashboard/search_destination.dart';
 import 'package:commute_nepal/screen/income/income_history.dart';
 import 'package:commute_nepal/screen/profile/editprofile.dart';
@@ -16,8 +17,8 @@ import 'package:commute_nepal/screen/registration/rider_registration/choose_vehi
 import 'package:commute_nepal/screen/registration/rider_registration/rider_verification_1.dart';
 import 'package:commute_nepal/screen/registration/rider_registration/rider_verification_2.dart';
 import 'package:commute_nepal/screen/registration/rider_registration/supporting_doc_3.dart';
+import 'package:commute_nepal/screen/ride%20history/ridehistory.dart';
 import 'package:commute_nepal/screen/rider_section/new_ridepage.dart';
-import 'package:commute_nepal/screen/rider_section/rider_dashboard.dart';
 import 'package:commute_nepal/screen/wallet/walletfirstscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -92,8 +93,9 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => const ProfileScreen(),
           '/test_screen': (context) => const TestScreen(),
           // rider dashboard
-          '/rider_dashboard': (context) => const RiderDashboardScreen(),
+          '/rider_dashboard': (context) => const RiderNavbar(),
           '/walletfirstscreen': (context) => const WalletFirstScreen(),
+          '/ride_history': (context) => const RideHistoryScreen(),
           '/incomehistory': (context) => const IncomeHistoryScreen(),
           '/editprofile': (context) => const EditProfilePage(),
           '/newtrip': (context) => const NewTripScreen()

@@ -2,14 +2,13 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/api/push_notification.dart';
 import 'package:commute_nepal/global_variable.dart';
-import 'package:commute_nepal/screen/rider_section/new_ridepage.dart';
+import 'package:commute_nepal/screen/income/income_history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import 'package:slider_button/slider_button.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 import 'package:snack/snack.dart';
@@ -28,7 +27,7 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
 
   List<Widget> lstWidget = [
     const RiderDashboardScreen(),
-    const NewTripScreen(),
+    const IncomeHistoryScreen(),
     const RiderDashboardScreen(),
   ];
   Position? currentPosition;
@@ -167,27 +166,6 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
                 onTap: () {},
               ))
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.motorcycle, size: 40), label: 'Ride'),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.money_dollar_circle_fill, size: 40),
-              label: 'Income'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 40), label: 'Account'),
-        ],
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        currentIndex: _selectedIndex,
-        unselectedItemColor: const Color.fromARGB(255, 194, 192, 192),
-        selectedItemColor: const Color.fromARGB(255, 24, 24, 24),
-        elevation: 10,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
       ),
     );
   }

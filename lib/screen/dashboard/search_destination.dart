@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:bs_flutter_buttons/bs_flutter_buttons.dart';
 import 'package:bs_flutter_card/bs_flutter_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -40,6 +41,8 @@ class _SeachDestinationState extends State<SeachDestination>
   bool isLoading = false;
   double rideBottonSheet = 0;
   double searchSheet = 50;
+  double requestsheet = 0;
+  late DatabaseReference rideRef;
   String? address;
   String? address2;
 
@@ -159,11 +162,8 @@ class _SeachDestinationState extends State<SeachDestination>
     });
   }
 
-  //
-
   void createRidequest() {
-    DatabaseReference rideRef =
-        FirebaseDatabase.instance.ref().child('riderequest').push();
+    rideRef = FirebaseDatabase.instance.ref().child('riderequest').push();
 
     var destinationaddress =
         Provider.of<AppData>(context, listen: false).destinationAddress;
@@ -218,10 +218,16 @@ class _SeachDestinationState extends State<SeachDestination>
   }
 
   void showSheet() async {
-    _showbootomModel(context);
-
     setState(() {
-      searchSheet = 0;
+      requestsheet = 500;
+    });
+  }
+
+  void cancelRequest() {
+    rideRef.remove();
+    setState(() {
+      requestsheet = 0;
+      // Navigator.pop(context);
     });
   }
 
@@ -238,26 +244,29 @@ class _SeachDestinationState extends State<SeachDestination>
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            zoomControlsEnabled: false,
-            mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            polylines: _polylines,
-            markers: {
-              Marker(
-                markerId: const MarkerId('source'),
-                position: _sourceLocation,
-              ),
-              Marker(
-                markerId: const MarkerId('destination'),
-                position: _destinationLocation,
-              ),
-            },
+          SizedBox(
+            height: 900,
+            child: GoogleMap(
+              zoomControlsEnabled: false,
+              mapType: MapType.normal,
+              myLocationButtonEnabled: true,
+              myLocationEnabled: true,
+              initialCameraPosition: _kGooglePlex,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              polylines: _polylines,
+              markers: {
+                Marker(
+                  markerId: const MarkerId('source'),
+                  position: _sourceLocation,
+                ),
+                Marker(
+                  markerId: const MarkerId('destination'),
+                  position: _destinationLocation,
+                ),
+              },
+            ),
           ),
           Container(
             height: 200,
@@ -387,8 +396,10 @@ class _SeachDestinationState extends State<SeachDestination>
                 height: searchSheet,
                 child: ElevatedButton(
                   onPressed: () {
-                    showSheet();
-
+                    if (seach_destination.text.isNotEmpty) {
+                      _showbootomModel(context);
+                    }
+                    print("plase enter the destinationssssssssssssss");
                     // _showbootomModel(context);
                   },
                   child: Text(
@@ -433,7 +444,7 @@ class _SeachDestinationState extends State<SeachDestination>
                         ),
                       ),
                     ]),
-                height: 0,
+                height: requestsheet,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -459,18 +470,23 @@ class _SeachDestinationState extends State<SeachDestination>
                         height: 30,
                       ),
                       //  circlur button
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                          border: Border.all(
-                            width: 1.0,
-                            color: Color.fromARGB(221, 0, 0, 0),
+                      GestureDetector(
+                        onTap: () {
+                          cancelRequest();
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              width: 1.0,
+                              color: Color.fromARGB(221, 0, 0, 0),
+                            ),
                           ),
+                          child: Icon(Icons.close, size: 25),
                         ),
-                        child: Icon(Icons.close, size: 25),
                       ),
                       SizedBox(
                         height: 10,
@@ -484,268 +500,198 @@ class _SeachDestinationState extends State<SeachDestination>
               ),
             ),
           ),
-// ya dekhi mini ashok le gareko frontend
 
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: AnimatedSize(
-          //     duration: const Duration(milliseconds: 500),
-          //     child: Container(
-          //       decoration: const BoxDecoration(
-          //           color: Colors.white,
-          //           borderRadius: BorderRadius.only(
-          //             topLeft: Radius.circular(20),
-          //             topRight: Radius.circular(20),
-          //           ),
-          //           boxShadow: [
-          //             BoxShadow(
-          //               color: Colors.black26,
-          //               blurRadius: 15.0,
-          //               spreadRadius: 0.5,
-          //               offset: Offset(
-          //                 0.7,
-          //                 0.7,
-          //               ),
-          //             ),
-          //           ]),
-          //       height: 350,
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Column(
-          //           children: [
-          //             SizedBox(
-          //               height: 6,
-          //             ),
-          //             Divider(
-          //               height: 2,
-          //               thickness: 6,
-          //               indent: 150,
-          //               endIndent: 150,
-          //             ),
-          //             SizedBox(
-          //               height: 6,
-          //             ),
-          //             SizedBox(
-          //               width: 400,
-          //               child: Text("Choose a trip or swipe up more options",
-          //                   textAlign: TextAlign.center,
-          //                   style: GoogleFonts.baloo2(
-          //                       color: Colors.black,
-          //                       fontSize: 18,
-          //                       fontWeight: FontWeight.w400)),
-          //             ),
-          //             Container(
-          //               decoration: BoxDecoration(
-          //                 color: Colors.white,
-          //                 borderRadius: BorderRadius.circular(10),
-          //                 border: Border.all(
-          //                   width: 1.0,
-          //                   color: Color.fromARGB(221, 0, 0, 0),
-          //                 ),
-          //               ),
-          //               child: Column(
-          //                 children: [
-          //                   Row(
-          //                     children: [
-          //                       const Padding(
-          //                         padding: EdgeInsets.only(left: 20),
-          //                         child: SizedBox(
-          //                           child: CircleAvatar(
-          //                             backgroundImage:
-          //                                 AssetImage('assets/images/car-r.jpg'),
-          //                             radius: 40,
-          //                           ),
-          //                         ),
-          //                       ),
-          //                       const SizedBox(
-          //                         width: 20,
-          //                       ),
-          //                       Column(
-          //                         crossAxisAlignment: CrossAxisAlignment.start,
-          //                         children: [
-          //                           const Text(
-          //                             "Taxi",
-          //                             style: TextStyle(
-          //                                 fontSize: 18,
-          //                                 fontWeight: FontWeight.w400),
-          //                           ),
-          //                           const SizedBox(
-          //                             height: 2,
-          //                           ),
-          //                           Row(
-          //                             children: [
-          //                               Container(
-          //                                   decoration: BoxDecoration(),
-          //                                   child: Text(
-          //                                     "14km - 16min away",
-          //                                     style: TextStyle(
-          //                                       fontSize: 16,
-          //                                       fontWeight: FontWeight.w400,
-          //                                       color: Colors.black,
-          //                                     ),
-          //                                   )),
-          //                               SizedBox(
-          //                                 width: 20,
-          //                               ),
-          //                               Container(
-          //                                 child: Row(
-          //                                   children: const [
-          //                                     Text(
-          //                                       "Rs. 100",
-          //                                       style: TextStyle(
-          //                                         fontSize: 18,
-          //                                         fontWeight: FontWeight.w400,
-          //                                         color: Colors.black,
-          //                                       ),
-          //                                     ),
-          //                                   ],
-          //                                 ),
-          //                               ),
-          //                             ],
-          //                           ),
-          //                         ],
-          //                       ),
-          //                     ],
-          //                   ),
-
-          //                   Row(
-          //                     children: [
-          //                       const Padding(
-          //                         padding: EdgeInsets.only(left: 20),
-          //                         child: SizedBox(
-          //                           child: CircleAvatar(
-          //                             backgroundImage:
-          //                                 AssetImage('assets/images/bike-r.jpg'),
-          //                             radius: 40,
-          //                           ),
-          //                         ),
-          //                       ),
-          //                       const SizedBox(
-          //                         width: 20,
-          //                       ),
-          //                       Column(
-          //                         crossAxisAlignment: CrossAxisAlignment.start,
-          //                         children: [
-          //                           const Text(
-          //                             "MoterBike",
-          //                             style: TextStyle(
-          //                                 fontSize: 18,
-          //                                 fontWeight: FontWeight.w400),
-          //                           ),
-          //                           const SizedBox(
-          //                             height: 2,
-          //                           ),
-          //                           Row(
-          //                             children: [
-          //                               Container(
-          //                                   decoration: BoxDecoration(),
-          //                                   child: Text(
-          //                                     "14km - 16min away",
-          //                                     style: TextStyle(
-          //                                       fontSize: 16,
-          //                                       fontWeight: FontWeight.w400,
-          //                                       color: Colors.black,
-          //                                     ),
-          //                                   )),
-          //                               SizedBox(
-          //                                 width: 20,
-          //                               ),
-          //                               Container(
-          //                                 child: Row(
-          //                                   children: const [
-          //                                     Text(
-          //                                       "Rs. 100",
-          //                                       style: TextStyle(
-          //                                         fontSize: 18,
-          //                                         fontWeight: FontWeight.w400,
-          //                                         color: Colors.black,
-          //                                       ),
-          //                                     ),
-          //                                   ],
-          //                                 ),
-          //                               ),
-          //                             ],
-          //                           ),
-          //                         ],
-          //                       ),
-          //                     ],
-          //                   ),
-
-          //                   Row(
-          //                     children: [
-          //                       const Padding(
-          //                         padding: EdgeInsets.only(left: 20),
-          //                         child: SizedBox(
-          //                           child: CircleAvatar(
-          //                             backgroundImage:
-          //                                 AssetImage('assets/images/services-r.png'),
-          //                             radius: 40,
-          //                           ),
-          //                         ),
-          //                       ),
-          //                       const SizedBox(
-          //                         width: 20,
-          //                       ),
-          //                       Column(
-          //                         crossAxisAlignment: CrossAxisAlignment.start,
-          //                         children: [
-          //                           const Text(
-          //                             "Service Provider",
-          //                             style: TextStyle(
-          //                                 fontSize: 18,
-          //                                 fontWeight: FontWeight.w400),
-          //                           ),
-          //                           const SizedBox(
-          //                             height: 2,
-          //                           ),
-          //                           Row(
-          //                             children: [
-          //                               Container(
-          //                                   decoration: BoxDecoration(),
-          //                                   child: Text(
-          //                                     "14km - 16min away",
-          //                                     style: TextStyle(
-          //                                       fontSize: 16,
-          //                                       fontWeight: FontWeight.w400,
-          //                                       color: Colors.black,
-          //                                     ),
-          //                                   )),
-          //                               SizedBox(
-          //                                 width: 20,
-          //                               ),
-          //                               Container(
-          //                                 child: Row(
-          //                                   children: const [
-          //                                     Text(
-          //                                       "Rs. 1200",
-          //                                       style: TextStyle(
-          //                                         fontSize: 18,
-          //                                         fontWeight: FontWeight.w400,
-          //                                         color: Colors.black,
-          //                                       ),
-          //                                     ),
-          //                                   ],
-          //                                 ),
-          //                               ),
-          //                             ],
-
-          //                           ),
-
-          //                         ],
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ],
-          //               ),
-          //             )
-          //           ],
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 15.0,
+                      spreadRadius: 0.5,
+                      offset: Offset(
+                        0.7,
+                        0.7,
+                      ),
+                    ),
+                  ]),
+              height: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    const Divider(
+                      height: 2,
+                      thickness: 6,
+                      indent: 150,
+                      endIndent: 150,
+                    ),
+                    SizedBox(
+                      height: 6,
+                    ),
+                    SizedBox(
+                      width: 400,
+                      child: Text("Choose a trip or swipe up more options",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.baloo2(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400)),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          width: 1.0,
+                          color: Color.fromARGB(221, 0, 0, 0),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 20),
+                                child: SizedBox(
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/images/car-r.jpg'),
+                                    radius: 40,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Taxi",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                          decoration: BoxDecoration(),
+                                          child: const Text(
+                                            "14km - 16min away",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
+                                          )),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          children: const [
+                                            Text(
+                                              "Rs. 100",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 20),
+                                child: SizedBox(
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('assets/images/bike-r.jpg'),
+                                    radius: 40,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "MoterBike",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                          decoration: BoxDecoration(),
+                                          child: const Text(
+                                            "14km - 16min away",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                            ),
+                                          )),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          children: const [
+                                            Text(
+                                              "Rs. 100",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
 
           // create botton sheet for car with price and cash and otional payment
 
@@ -755,7 +701,7 @@ class _SeachDestinationState extends State<SeachDestination>
     );
   }
 
-  void _showbootomModel(BuildContext context) {
+  _showbootomModel(BuildContext context) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -765,85 +711,97 @@ class _SeachDestinationState extends State<SeachDestination>
           ),
         ),
         builder: (BuildContext context) {
-          return DraggableScrollableSheet(
-            expand: false,
-            initialChildSize: 0.3,
-            maxChildSize: 0.7,
-            minChildSize: 0.25,
-            builder: (context, scollController) => SizedBox(
-              height: 300,
-              // add loading indicator
-
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 170,
-                          width: 170,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.black,
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  height: 2,
+                  thickness: 6,
+                  indent: 150,
+                  endIndent: 150,
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                SizedBox(
+                  width: 400,
+                  child: Text("calculating your trip fare",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.baloo2(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400)),
+                ),
+                Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: null),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/images/car.jpg",
+                              height: 100,
+                              width: 100,
+                            ),
+                            SizedBox(
                               width: 2,
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              Icon(size: 100, Icons.bike_scooter),
-                              Text("Bike"),
-                              Text((tripDirectionDetails != null)
-                                  ? tripDirectionDetails!.distanceText
-                                      .toString()
-                                  : ""),
-                              Text((tripDirectionDetails != null)
-                                  ? HelpherMethods.estimatedFare(
-                                      tripDirectionDetails)
-                                  : ""),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: Container(
-                              height: 170,
-                              width: 170,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                // heighlight border
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 2,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Taxi",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400),
                                 ),
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(size: 100, Icons.car_rental_rounded),
-                                  Text("Car"),
-                                  Text("₹ 20"),
-                                ],
-                              )),
+                                Text(
+                                  (tripDirectionDetails != null)
+                                      ? tripDirectionDetails!.distanceText
+                                          .toString()
+                                      : "",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                            Expanded(child: Container()),
+                            // add rupes sysmbol
+                            Text(
+                              (tripDirectionDetails != null)
+                                  ? "Rs. ${HelpherMethods.estimatedFare(tripDirectionDetails!)}"
+                                  : "",
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                  CustomButton(
-                      text: "Confirm Ride",
-                      loading: isLoading,
-                      onPressed: () {
-                        createRidequest();
-                      })
-                ],
-              ),
+                ),
+                CustomButton(
+                    text: "Confirm Ride",
+                    loading: isLoading,
+                    onPressed: () {
+                      createRidequest();
+                      showSheet();
+                      Navigator.pop(context);
+
+                      // createRidequest();
+                    })
+              ],
             ),
           );
         });

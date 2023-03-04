@@ -1,21 +1,22 @@
-import 'package:commute_nepal/screen/dashboard/DashboardScreen.dart';
+import 'package:commute_nepal/screen/income/income_history.dart';
 import 'package:commute_nepal/screen/profile/profilescreen.dart';
-import 'package:commute_nepal/screen/ride%20history/ridehistory.dart';
+import 'package:commute_nepal/screen/rider_section/rider_dashboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Navbar extends StatefulWidget {
-  const Navbar({Key? key}) : super(key: key);
+class RiderNavbar extends StatefulWidget {
+  const RiderNavbar({Key? key}) : super(key: key);
 
   @override
-  State<Navbar> createState() => _NavbarState();
+  State<RiderNavbar> createState() => _RiderNavbarState();
 }
 
-class _NavbarState extends State<Navbar> {
+class _RiderNavbarState extends State<RiderNavbar> {
   int _selectedIndex = 0;
 
   List<Widget> lstWidget = [
-    const DashboardScreen(),
-    const RideHistoryScreen(),
+    const RiderDashboardScreen(),
+    const IncomeHistoryScreen(),
     const ProfileScreen(),
   ];
   @override
@@ -24,11 +25,12 @@ class _NavbarState extends State<Navbar> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home, size: 30), label: 'Home'),
+              icon: Icon(Icons.motorcycle, size: 40), label: 'Ride'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.history, size: 30), label: 'History'),
+              icon: Icon(CupertinoIcons.money_dollar_circle_fill, size: 40),
+              label: 'Income'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person, size: 30), label: 'Account'),
+              icon: Icon(Icons.person, size: 40), label: 'Account'),
         ],
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         currentIndex: _selectedIndex,

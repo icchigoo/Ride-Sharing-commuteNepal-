@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -89,6 +90,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                         style:
                             const TextStyle(fontSize: 16, color: Colors.black),
                         decoration: InputDecoration(
+                          counter: Offstage(),
                           hintText: "98########",
                           hintStyle: TextStyle(color: Colors.grey.shade700),
                           fillColor: Colors.grey.shade200,
@@ -112,27 +114,37 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                   setState(() {
                     isLoading = true;
                   });
-
-                  await auth.setSettings(
-                      appVerificationDisabledForTesting: true);
-                  await auth.verifyPhoneNumber(
-                    phoneNumber: '+977$phoneNumber',
-                    timeout: const Duration(seconds: 60),
-                    verificationCompleted: (PhoneAuthCredential credential) {},
-                    verificationFailed: (FirebaseAuthException e) {},
-                    codeSent: (String verificationId, int? resendToken) {
-                      EnterPhoneScreen.verify = verificationId;
-                      Navigator.pushNamed(context, '/verify_otp');
-                      SnackBar(
-                              content: Text(
-                                  'OTP has been sent to +977 $phoneNumber'))
-                          .show(context);
-                      setState(() {
-                        isLoading = false;
-                      });
-                    },
-                    codeAutoRetrievalTimeout: (String verificationId) {},
-                  );
+                  var connectivityResult =
+                      await (Connectivity().checkConnectivity());
+                  if (connectivityResult == ConnectivityResult.wifi) {
+                    await auth.setSettings(
+                        appVerificationDisabledForTesting: true);
+                    await auth.verifyPhoneNumber(
+                      phoneNumber: '+977$phoneNumber',
+                      timeout: const Duration(seconds: 60),
+                      verificationCompleted:
+                          (PhoneAuthCredential credential) {},
+                      verificationFailed: (FirebaseAuthException e) {},
+                      codeSent: (String verificationId, int? resendToken) {
+                        EnterPhoneScreen.verify = verificationId;
+                        Navigator.pushNamed(context, '/verify_otp');
+                        SnackBar(
+                                content: Text(
+                                    'OTP has been sent to +977 $phoneNumber'))
+                            .show(context);
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                      codeAutoRetrievalTimeout: (String verificationId) {},
+                    );
+                  } else {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    const SnackBar(content: Text('No internet connection'))
+                        .show(context);
+                  }
                 }
               },
             ),

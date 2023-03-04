@@ -209,10 +209,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
     // add user data to cloud firestore
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      setState(() {
-        id = user!.uid;
-        isloading = true;
-      });
+
       await FirebaseFirestore.instance.collection('user').doc(user!.uid).set({
         'user_information': {
           'firstName': _firstnameController.text,
@@ -224,7 +221,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
       });
 
       DatabaseReference newUserRef =
-          FirebaseDatabase.instance.reference().child('user/${user.uid}');
+          FirebaseDatabase.instance.ref().child('user/${user.uid}');
       Map userMap = {
         'firstName': _firstnameController.text,
         'lastName': _lastnameController.text,

@@ -273,7 +273,7 @@ class NotificationDialog extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushNamed(context, '/newtrip');
                           },
                           child: Text(
                             'Accept',

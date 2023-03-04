@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "98529474187",
+    "firebase_url": "https://commutenepal-d601d-default-rtdb.firebaseio.com",
     "project_id": "commutenepal-d601d",
     "storage_bucket": "commutenepal-d601d.appspot.com"
   },
@@ -14,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "98529474187-hkj3rn7piueb1njefgmrqdhu7b23j96k.apps.googleusercontent.com",
+          "client_id": "98529474187-837420s3ejhjmelj815sf1hsnaqe6mth.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.commute_nepal",
+            "certificate_hash": "a7721f7bddcb3faa9bfdac666ed0ce29aca9b48e"
+          }
+        },
+        {
+          "client_id": "98529474187-kp8brf4m0eurctl8cqrdg0dsml7m9at1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +38,13 @@
             {
               "client_id": "98529474187-hkj3rn7piueb1njefgmrqdhu7b23j96k.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "98529474187-tdj5bktfsg4e98pk80uh5quksh7pcno9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.commuteNepal"
+              }
             }
           ]
         }

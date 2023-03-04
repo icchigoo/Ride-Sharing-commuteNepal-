@@ -1,8 +1,9 @@
+import 'package:commute_nepal/screen/wallet/walletfirstscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
-import 'package:provider/provider.dart';
 
+import 'package:provider/provider.dart';
 import '../../dataprovider/appdata.dart';
 import 'editprofile.dart';
 
@@ -158,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Padding(
                             padding: EdgeInsets.only(top: 34.0, left: 15),
                             child: Text(
-                              ' Commute Cash',
+                              ' Commute_nepal Cash',
                               style: TextStyle(
                                 fontSize: 17,
                                 color: Colors.black,
@@ -174,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               'NPR 0.00',
                               style: TextStyle(
                                 fontSize: 18,
-                                color: Color.fromARGB(255, 104, 103, 103),
+                                color: Colors.grey,
                                 height: 1,
                               ),
                               textAlign: TextAlign.center,
@@ -182,12 +183,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          color: Color.fromARGB(255, 125, 124, 124),
-                          size: 22,
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Color.fromARGB(255, 141, 140, 140),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const WalletFirstScreen()),
+                            );
+                          },
                         ),
                       ),
                     ],

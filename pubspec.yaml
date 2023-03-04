@@ -79,6 +79,7 @@ dependencies:
   awesome_notifications: ^0.7.4+1
   firebase_messaging: ^14.1.1
   flutter_local_notifications: ^12.0.4
+  
 
   
 
