@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: '/test_screen',
+        initialRoute: '/profile',
         routes: {
           '/enter_phone': (context) => const EnterPhoneScreen(),
           '/verify_otp': (context) => const OtpScreen(),

@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                "Mugi Lover",
+                                "Donalt Truph",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22,
@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           top: 2,
                                           bottom: 2),
                                       child: Text(
-                                        "+977 9808758007",
+                                        "+977 9876134578",
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,
@@ -156,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Padding(
                             padding: EdgeInsets.only(top: 34.0, left: 15),
                             child: Text(
-                              'Commute_nepal',
+                              ' Roadway Cash',
                               style: TextStyle(
                                 fontSize: 17,
                                 color: Colors.black,
