@@ -1,6 +1,7 @@
 import 'package:commute_nepal/model/address.dart';
 import 'package:commute_nepal/model/directiondetails.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AppData extends ChangeNotifier {
   String? address1 = "";
@@ -17,6 +18,14 @@ class AppData extends ChangeNotifier {
   Address? pickUpAddress;
   void updatePickUpAddress(Address pickUp) {
     pickUpAddress = pickUp;
+    notifyListeners();
+  }
+
+  // let pick up latitute and longitute
+  LatLng? currentPosition = LatLng(0.0, 0.0);
+  void updateCurrentLatLng(LatLng pos) {
+    // sset pick up latitute and longitute
+    currentPosition = LatLng(pos.latitude, pos.longitude);
     notifyListeners();
   }
 

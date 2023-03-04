@@ -1,14 +1,14 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:commute_nepal/api/push_notification.dart';
 import 'package:commute_nepal/global_variable.dart';
+import 'package:commute_nepal/screen/rider_section/new_ridepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 
 import 'package:slider_button/slider_button.dart';
 import 'package:sliding_switch/sliding_switch.dart';
@@ -28,7 +28,7 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
 
   List<Widget> lstWidget = [
     const RiderDashboardScreen(),
-    const RiderDashboardScreen(),
+    const NewTripScreen(),
     const RiderDashboardScreen(),
   ];
   Position? currentPosition;
@@ -57,10 +57,19 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
     }
   }
 
+  // Get current driver info
+  void getCurrentDriverInfo() async {
+    User? currentFirebaseUser = FirebaseAuth.instance.currentUser;
+    PushNotificationService pushNotificationService = PushNotificationService();
+    PushNotificationService.initialize(context);
+    PushNotificationService.getToken();
+  }
+
   @override
   void initState() {
-    getCurrentPositon();
     super.initState();
+    getCurrentDriverInfo();
+    getCurrentPositon();
   }
 
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -99,6 +108,8 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
     riderPositionStream =
         Geolocator.getPositionStream().listen((Position position) {
       currentPosition = position;
+      // add to state management provider
+
       Geofire.setLocation(userId!, position.latitude, position.longitude);
       LatLng latLng = LatLng(position.latitude, position.longitude);
       controller.animateCamera(CameraUpdate.newLatLng(latLng));
@@ -127,6 +138,8 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
             width: double.infinity,
             color: Colors.black45,
           ),
+          // button
+
           Positioned(
               top: 40,
               left: 60,

@@ -8,9 +8,6 @@ import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 
-
-
-
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
   static String firstname = "";

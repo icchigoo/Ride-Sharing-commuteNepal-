@@ -9,9 +9,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-
-
-
 class GoogleMapsScreen extends StatefulWidget {
   GoogleMapsScreen({
     Key? key,
@@ -46,11 +43,16 @@ class _GoogleMapsScreenState extends State<GoogleMapsScreen> {
 
       // Adding to the provider
       Address pickUpAddress = Address(latitude: 0.0, longitude: 0.0);
+      LatLng currentLatLng = LatLng(currentPosition.latitude,
+          currentPosition.longitude); // add to curent location
       pickUpAddress.latitude = currentPosition.latitude;
       pickUpAddress.longitude = currentPosition.longitude;
 
       Provider.of<AppData>(context, listen: false)
           .updatePickUpAddress(pickUpAddress);
+
+      Provider.of<AppData>(context, listen: false)
+          .updateCurrentLatLng(currentLatLng);
 
       _markers.add(
         Marker(

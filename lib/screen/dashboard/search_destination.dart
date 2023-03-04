@@ -40,6 +40,8 @@ class _SeachDestinationState extends State<SeachDestination>
   bool isLoading = false;
   double rideBottonSheet = 0;
   double searchSheet = 50;
+  String? address;
+  String? address2;
 
   // initial location of the map view
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -157,59 +159,30 @@ class _SeachDestinationState extends State<SeachDestination>
     });
   }
 
-  // void createRidequest() {
-  //   DatabaseReference rideRef =
-  //       FirebaseDatabase.instance.ref().child('riderequest').push();
+  //
 
-  //   // var pickupaddress = Provider.of<AppData>(context).pickUpAddress;
-  //   // var destinationaddress = Provider.of<AppData>(context).address1;
-  //   // String? pername = Provider.of<AppData>(context).username;
-
-  //   Map pickupMap = {
-  //     "latitude": "laal",
-  //     "longitude": "lolo",
-  //   };
-  //   Map destinationMap = {
-  //     "latitude": "laal",
-  //     "longitude": "lolo",
-  //   };
-
-  //   Map riderMap = {
-  //     'created_at': DateTime.now().toString(),
-  //     'rider_name': "nabin",
-  //     'pickup_address': "kalopul",
-  //     'destination_address': "softwarica",
-  //     'location': pickupMap,
-  //     'destination': destinationMap,
-  //     'payment_method': 'cash',
-  //     'driver_id': "waiting"
-  //   };
-  //   rideRef.set(riderMap);
-  // }
   void createRidequest() {
     DatabaseReference rideRef =
         FirebaseDatabase.instance.ref().child('riderequest').push();
 
-    var pickupaddress =
-        Provider.of<AppData>(context, listen: false).pickUpAddress;
     var destinationaddress =
         Provider.of<AppData>(context, listen: false).destinationAddress;
     String? pername = Provider.of<AppData>(context, listen: false).fullname;
 
     Map pickupMap = {
-      "latitude": pickupaddress!.latitude,
-      "longitude": pickupaddress.longitude,
+      "latitude": _sourceLocation.latitude,
+      "longitude": _sourceLocation.longitude,
     };
     Map destinationMap = {
-      "latitude": destinationaddress!.latitude,
-      "longitude": destinationaddress.longitude,
+      "latitude": _destinationLocation.latitude,
+      "longitude": _destinationLocation.longitude,
     };
 
     Map riderMap = {
       'created_at': DateTime.now().toString(),
       'rider_name': pername,
-      'pickup_address': pickupaddress.placeName,
-      'destination_address': destinationaddress.placeName,
+      'pickup_address': "$address, $address2",
+      'destination_address': destinationaddress?.placeName,
       'location': pickupMap,
       'destination': destinationMap,
       'payment_method': 'cash',
@@ -252,17 +225,10 @@ class _SeachDestinationState extends State<SeachDestination>
     });
   }
 
-  // void getPrice() {
-  //   String val = HelpherMethods.estimatedFare(tripDirectionDetails);
-
-  //   print("VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-  //   print(val);
-  // }
-
   @override
   Widget build(BuildContext context) {
-    String? address = Provider.of<AppData>(context).address1;
-    String? address2 = Provider.of<AppData>(context).address2;
+    address = Provider.of<AppData>(context).address1;
+    address2 = Provider.of<AppData>(context).address2;
     String? fare = Provider.of<AppData>(context).totalFare;
 
     print(address);
@@ -520,262 +486,266 @@ class _SeachDestinationState extends State<SeachDestination>
           ),
 // ya dekhi mini ashok le gareko frontend
 
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: AnimatedSize(
-              duration: const Duration(milliseconds: 500),
-              child: Container(
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 15.0,
-                        spreadRadius: 0.5,
-                        offset: Offset(
-                          0.7,
-                          0.7,
-                        ),
-                      ),
-                    ]),
-                height: 350,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Divider(
-                        height: 2,
-                        thickness: 6,
-                        indent: 150,
-                        endIndent: 150,
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      SizedBox(
-                        width: 400,
-                        child: Text("Choose a trip or swipe up more options",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.baloo2(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400)),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            width: 1.0,
-                            color: Color.fromARGB(221, 0, 0, 0),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: SizedBox(
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage('assets/images/car-r.jpg'),
-                                      radius: 40,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Taxi",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                            decoration: BoxDecoration(),
-                                            child: Text(
-                                              "14km - 16min away",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            )),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: const [
-                                              Text(
-                                                "Rs. 100",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: SizedBox(
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/bike-r.jpg'),
-                                      radius: 40,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "MoterBike",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                            decoration: BoxDecoration(),
-                                            child: Text(
-                                              "14km - 16min away",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            )),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: const [
-                                              Text(
-                                                "Rs. 100",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: SizedBox(
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          'assets/images/services-r.png'),
-                                      radius: 40,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Service Provider",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Container(
-                                            decoration: BoxDecoration(),
-                                            child: Text(
-                                              "14km - 16min away",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                              ),
-                                            )),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: const [
-                                              Text(
-                                                "Rs. 1200",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 0,
+          //   left: 0,
+          //   right: 0,
+          //   child: AnimatedSize(
+          //     duration: const Duration(milliseconds: 500),
+          //     child: Container(
+          //       decoration: const BoxDecoration(
+          //           color: Colors.white,
+          //           borderRadius: BorderRadius.only(
+          //             topLeft: Radius.circular(20),
+          //             topRight: Radius.circular(20),
+          //           ),
+          //           boxShadow: [
+          //             BoxShadow(
+          //               color: Colors.black26,
+          //               blurRadius: 15.0,
+          //               spreadRadius: 0.5,
+          //               offset: Offset(
+          //                 0.7,
+          //                 0.7,
+          //               ),
+          //             ),
+          //           ]),
+          //       height: 350,
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(8.0),
+          //         child: Column(
+          //           children: [
+          //             SizedBox(
+          //               height: 6,
+          //             ),
+          //             Divider(
+          //               height: 2,
+          //               thickness: 6,
+          //               indent: 150,
+          //               endIndent: 150,
+          //             ),
+          //             SizedBox(
+          //               height: 6,
+          //             ),
+          //             SizedBox(
+          //               width: 400,
+          //               child: Text("Choose a trip or swipe up more options",
+          //                   textAlign: TextAlign.center,
+          //                   style: GoogleFonts.baloo2(
+          //                       color: Colors.black,
+          //                       fontSize: 18,
+          //                       fontWeight: FontWeight.w400)),
+          //             ),
+          //             Container(
+          //               decoration: BoxDecoration(
+          //                 color: Colors.white,
+          //                 borderRadius: BorderRadius.circular(10),
+          //                 border: Border.all(
+          //                   width: 1.0,
+          //                   color: Color.fromARGB(221, 0, 0, 0),
+          //                 ),
+          //               ),
+          //               child: Column(
+          //                 children: [
+          //                   Row(
+          //                     children: [
+          //                       const Padding(
+          //                         padding: EdgeInsets.only(left: 20),
+          //                         child: SizedBox(
+          //                           child: CircleAvatar(
+          //                             backgroundImage:
+          //                                 AssetImage('assets/images/car-r.jpg'),
+          //                             radius: 40,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                       const SizedBox(
+          //                         width: 20,
+          //                       ),
+          //                       Column(
+          //                         crossAxisAlignment: CrossAxisAlignment.start,
+          //                         children: [
+          //                           const Text(
+          //                             "Taxi",
+          //                             style: TextStyle(
+          //                                 fontSize: 18,
+          //                                 fontWeight: FontWeight.w400),
+          //                           ),
+          //                           const SizedBox(
+          //                             height: 2,
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Container(
+          //                                   decoration: BoxDecoration(),
+          //                                   child: Text(
+          //                                     "14km - 16min away",
+          //                                     style: TextStyle(
+          //                                       fontSize: 16,
+          //                                       fontWeight: FontWeight.w400,
+          //                                       color: Colors.black,
+          //                                     ),
+          //                                   )),
+          //                               SizedBox(
+          //                                 width: 20,
+          //                               ),
+          //                               Container(
+          //                                 child: Row(
+          //                                   children: const [
+          //                                     Text(
+          //                                       "Rs. 100",
+          //                                       style: TextStyle(
+          //                                         fontSize: 18,
+          //                                         fontWeight: FontWeight.w400,
+          //                                         color: Colors.black,
+          //                                       ),
+          //                                     ),
+          //                                   ],
+          //                                 ),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                         ],
+          //                       ),
+          //                     ],
+          //                   ),
+
+          //                   Row(
+          //                     children: [
+          //                       const Padding(
+          //                         padding: EdgeInsets.only(left: 20),
+          //                         child: SizedBox(
+          //                           child: CircleAvatar(
+          //                             backgroundImage:
+          //                                 AssetImage('assets/images/bike-r.jpg'),
+          //                             radius: 40,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                       const SizedBox(
+          //                         width: 20,
+          //                       ),
+          //                       Column(
+          //                         crossAxisAlignment: CrossAxisAlignment.start,
+          //                         children: [
+          //                           const Text(
+          //                             "MoterBike",
+          //                             style: TextStyle(
+          //                                 fontSize: 18,
+          //                                 fontWeight: FontWeight.w400),
+          //                           ),
+          //                           const SizedBox(
+          //                             height: 2,
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Container(
+          //                                   decoration: BoxDecoration(),
+          //                                   child: Text(
+          //                                     "14km - 16min away",
+          //                                     style: TextStyle(
+          //                                       fontSize: 16,
+          //                                       fontWeight: FontWeight.w400,
+          //                                       color: Colors.black,
+          //                                     ),
+          //                                   )),
+          //                               SizedBox(
+          //                                 width: 20,
+          //                               ),
+          //                               Container(
+          //                                 child: Row(
+          //                                   children: const [
+          //                                     Text(
+          //                                       "Rs. 100",
+          //                                       style: TextStyle(
+          //                                         fontSize: 18,
+          //                                         fontWeight: FontWeight.w400,
+          //                                         color: Colors.black,
+          //                                       ),
+          //                                     ),
+          //                                   ],
+          //                                 ),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                         ],
+          //                       ),
+          //                     ],
+          //                   ),
+
+          //                   Row(
+          //                     children: [
+          //                       const Padding(
+          //                         padding: EdgeInsets.only(left: 20),
+          //                         child: SizedBox(
+          //                           child: CircleAvatar(
+          //                             backgroundImage:
+          //                                 AssetImage('assets/images/services-r.png'),
+          //                             radius: 40,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                       const SizedBox(
+          //                         width: 20,
+          //                       ),
+          //                       Column(
+          //                         crossAxisAlignment: CrossAxisAlignment.start,
+          //                         children: [
+          //                           const Text(
+          //                             "Service Provider",
+          //                             style: TextStyle(
+          //                                 fontSize: 18,
+          //                                 fontWeight: FontWeight.w400),
+          //                           ),
+          //                           const SizedBox(
+          //                             height: 2,
+          //                           ),
+          //                           Row(
+          //                             children: [
+          //                               Container(
+          //                                   decoration: BoxDecoration(),
+          //                                   child: Text(
+          //                                     "14km - 16min away",
+          //                                     style: TextStyle(
+          //                                       fontSize: 16,
+          //                                       fontWeight: FontWeight.w400,
+          //                                       color: Colors.black,
+          //                                     ),
+          //                                   )),
+          //                               SizedBox(
+          //                                 width: 20,
+          //                               ),
+          //                               Container(
+          //                                 child: Row(
+          //                                   children: const [
+          //                                     Text(
+          //                                       "Rs. 1200",
+          //                                       style: TextStyle(
+          //                                         fontSize: 18,
+          //                                         fontWeight: FontWeight.w400,
+          //                                         color: Colors.black,
+          //                                       ),
+          //                                     ),
+          //                                   ],
+          //                                 ),
+          //                               ),
+          //                             ],
+
+          //                           ),
+
+          //                         ],
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ],
+          //               ),
+          //             )
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           // create botton sheet for car with price and cash and otional payment
 

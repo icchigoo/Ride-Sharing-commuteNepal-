@@ -1,6 +1,7 @@
 import 'package:commute_nepal/api/httpservices.dart';
-import 'package:commute_nepal/model/directiondetails.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../model/directiondetails.dart';
 
 class HelpherMethods {
   // fetch user data form user collection
