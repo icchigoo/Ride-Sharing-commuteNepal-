@@ -48,7 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     String? firstaddress = Provider.of<AppData>(context).address1;
     String? secondaddress = Provider.of<AppData>(context).address2;
-    String? username = Provider.of<AppData>(context).username;
+    String? username = Provider.of<AppData>(context).fullname;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 28.0, top: 5),
                   child: Text(
-                    "Welcome, $username",
+                    "Welcome, $username!",
                     style: TextStyle(
                         color: Color.fromARGB(255, 13, 0, 0),
                         fontSize: 18,

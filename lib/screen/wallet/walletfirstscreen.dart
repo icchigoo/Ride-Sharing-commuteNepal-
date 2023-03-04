@@ -59,7 +59,7 @@ class _WalletFirstScreenState extends State<WalletFirstScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 28.0, left: 15),
                           child: Text(
-                            'Commute_nepal Cash',
+                            ' Roadway Cash',
                             style: TextStyle(
                               fontSize: 18,
                               color: Colors.black,

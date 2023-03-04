@@ -38,9 +38,10 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? username;
-  void SetName(String name) {
-    username = name;
+  String? fullname = "";
+  void SetName(String firstname, String lastname) {
+    fullname = "$firstname";
+
     notifyListeners();
   }
 }

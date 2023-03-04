@@ -4,6 +4,7 @@ import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/screen/dashboard/bottom_nav_bar.dart';
 import 'package:commute_nepal/screen/dashboard/places_g.dart';
 import 'package:commute_nepal/screen/dashboard/search_destination.dart';
+import 'package:commute_nepal/screen/profile/editprofile.dart';
 import 'package:commute_nepal/screen/profile/profilescreen.dart';
 import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/screen/registration/OtpScreen.dart';
@@ -50,7 +51,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: '/profile',
+        initialRoute: '/enter_phone',
         routes: {
           '/enter_phone': (context) => const EnterPhoneScreen(),
           '/verify_otp': (context) => const OtpScreen(),
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
           // rider dashboard
           '/rider_dashboard': (context) => const RiderDashboardScreen(),
           '/walletfirstscreen': (context) => const WalletFirstScreen(),
+          '/editprofile': (context) => const EditProfilePage(),
         },
       ),
     );

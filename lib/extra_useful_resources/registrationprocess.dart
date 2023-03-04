@@ -59,7 +59,7 @@ class _RegistrationProcessScreenState extends State<RegistrationProcessScreen> {
                   )
                 ])
               ],
-            )
+            ),
           ],
         ),
       ),

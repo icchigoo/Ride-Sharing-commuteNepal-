@@ -11,7 +11,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-
 import 'package:snack/snack.dart';
 
 class SupportingDoc3 extends StatefulWidget {

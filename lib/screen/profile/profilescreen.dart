@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../../dataprovider/appdata.dart';
+import 'editprofile.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -12,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    String? username = Provider.of<AppData>(context).fullname;
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white.withOpacity(.94),
@@ -35,15 +40,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Row(
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: SizedBox(
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('assets/images/logo.png'),
-                                radius: 40,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Stack(children: [
+                              Container(
+                                child: const CircleAvatar(
+                                  // backgroundImage:
+                                  //     AssetImage('assets/images/logo.png'),
+                                  radius: 42,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 187, 186, 186),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    height: 38,
+                                    width: 38,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                    ),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.green,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const EditProfilePage()));
+                                      },
+                                    ),
+                                  )),
+                            ]),
                           ),
                           const SizedBox(
                             width: 20,
@@ -51,11 +84,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Donalt Truph",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  "$username",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 22,
+                                  ),
                                 ),
                               ),
                               const SizedBox(
@@ -79,43 +115,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         "+977 9876134578",
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 12.0,
-                                          right: 10,
-                                          top: 2,
-                                          bottom: 2),
-                                      child: Row(
-                                        children: const [
-                                          Text(
-                                            "5.0",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(left: 4.0),
-                                            child: Icon(
-                                              Icons.star,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ],
                                       ),
                                     ),
                                   ),
@@ -156,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Padding(
                             padding: EdgeInsets.only(top: 34.0, left: 15),
                             child: Text(
-                              ' Roadway Cash',
+                              ' Commute Cash',
                               style: TextStyle(
                                 fontSize: 17,
                                 color: Colors.black,
@@ -201,10 +203,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 items: [
                   SettingsItem(
                     onTap: () {},
-                    icons: CupertinoIcons.pencil_outline,
-                    iconStyle: IconStyle(),
-                    title: 'Appearance',
-                    subtitle: "Make Ziar'App yours",
+                    icons: Icons.history_toggle_off_outlined,
+                    iconStyle: IconStyle(
+                      iconsColor: Colors.white,
+                      withBackground: true,
+                      backgroundColor: Colors.black,
+                    ),
+                    title: 'Ride History',
+                    subtitle: "Tap to view your ride history",
                   ),
                   SettingsItem(
                     onTap: () {},
@@ -212,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconStyle: IconStyle(
                       iconsColor: Colors.white,
                       withBackground: true,
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.black,
                     ),
                     title: 'Privacy',
                     subtitle: "Lock Ziar'App to improve your privacy",
@@ -223,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconStyle: IconStyle(
                       iconsColor: Colors.white,
                       withBackground: true,
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.black,
                     ),
                     title: 'Dark mode',
                     subtitle: "Automatic",
@@ -239,21 +245,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SettingsItem(
                     onTap: () {},
                     icons: Icons.notifications,
-                    iconStyle: IconStyle(),
+                    iconStyle: IconStyle(
+                      iconsColor: Colors.white,
+                      withBackground: true,
+                      backgroundColor: Colors.black,
+                    ),
                     title: 'Notifications',
                     subtitle: "Manage your notifications",
                   ),
                   SettingsItem(
                     onTap: () {},
                     icons: Icons.language,
-                    iconStyle: IconStyle(),
+                    iconStyle: IconStyle(
+                      iconsColor: Colors.white,
+                      withBackground: true,
+                      backgroundColor: Colors.black,
+                    ),
                     title: 'Language',
                     subtitle: "English",
                   ),
                   SettingsItem(
                     onTap: () {},
                     icons: Icons.location_on,
-                    iconStyle: IconStyle(),
+                    iconStyle: IconStyle(
+                      iconsColor: Colors.white,
+                      withBackground: true,
+                      backgroundColor: Colors.black,
+                    ),
                     title: 'Location',
                     subtitle: "Automatic",
                   ),
@@ -271,14 +289,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SettingsItem(
                     onTap: () {},
                     icons: CupertinoIcons.repeat,
-                    title: "Change email",
+                    title: "Change number",
                   ),
                   SettingsItem(
                     onTap: () {},
                     icons: CupertinoIcons.delete_solid,
                     title: "Delete account",
                     titleStyle: const TextStyle(
-                      color: Colors.red,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
