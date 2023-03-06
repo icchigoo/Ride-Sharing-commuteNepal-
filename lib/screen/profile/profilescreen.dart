@@ -1,9 +1,11 @@
 import 'package:commute_nepal/screen/wallet/walletfirstscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../dataprovider/appdata.dart';
 import 'editprofile.dart';
 
@@ -15,9 +17,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  Future<void> _signOut() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    Navigator.pushNamed(context, '/enter_phone');
+  }
+
   @override
   Widget build(BuildContext context) {
     String? username = Provider.of<AppData>(context).fullname;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String phone = auth.currentUser!.phoneNumber.toString();
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white.withOpacity(.94),
@@ -106,15 +117,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       color: const Color.fromARGB(
                                           255, 255, 255, 255),
                                     ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
                                           left: 8.0,
                                           right: 8,
                                           top: 2,
                                           bottom: 2),
                                       child: Text(
-                                        "+977 9876134578",
-                                        style: TextStyle(
+                                        phone,
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w400,
                                           color: Colors.black,
@@ -159,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Padding(
                             padding: EdgeInsets.only(top: 34.0, left: 15),
                             child: Text(
-                              ' Commute_nepal Cash',
+                              ' Roadway Cash',
                               style: TextStyle(
                                 fontSize: 17,
                                 color: Colors.black,
@@ -292,7 +303,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 settingsGroupTitle: "Account",
                 items: [
                   SettingsItem(
-                    onTap: () {},
+                    onTap: () {
+                      _signOut();
+                    },
                     icons: Icons.exit_to_app_rounded,
                     title: "Sign Out",
                   ),

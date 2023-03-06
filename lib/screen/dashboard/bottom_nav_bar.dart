@@ -11,6 +11,11 @@ class Navbar extends StatefulWidget {
 }
 
 class _NavbarState extends State<Navbar> {
+  // void autologin(){
+//   if (FirebaseAuth.instance.currentUser != null) {
+//     Navigator.pushNamed(context, routeName)
+//   }
+// }
   int _selectedIndex = 0;
 
   List<Widget> lstWidget = [

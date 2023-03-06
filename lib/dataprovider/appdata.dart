@@ -50,6 +50,19 @@ class AppData extends ChangeNotifier {
   String? fullname = "";
   void SetName(String firstname, String lastname) {
     fullname = "$firstname";
+    notifyListeners();
+  }
+
+  var verification = "";
+  void setVerification(String ver) {
+    verification = ver;
+    print("apppppppppppppppppppppppppppp$verification");
+  }
+
+  // driver pick up location
+  LatLng? driverPickUpLocation;
+  void updateDriverPickUpLocation(LatLng pos) {
+    driverPickUpLocation = LatLng(pos.latitude, pos.longitude);
 
     notifyListeners();
   }

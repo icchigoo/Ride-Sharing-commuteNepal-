@@ -44,46 +44,46 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDvWOMyaH1BuetGHzWSD_9vHZ7ZWhObmIg',
-    appId: '1:98529474187:web:ddbc034ad59932a068868e',
-    messagingSenderId: '98529474187',
-    projectId: 'commutenepal-d601d',
-    authDomain: 'commutenepal-d601d.firebaseapp.com',
-    databaseURL: 'https://commutenepal-d601d-default-rtdb.firebaseio.com',
-    storageBucket: 'commutenepal-d601d.appspot.com',
-    measurementId: 'G-ZX50R138VM',
+    apiKey: 'AIzaSyBXHLRS65_qSjdRelkAQogjcMxt06uXTLw',
+    appId: '1:884502786471:web:8276d4e8ac6b68ae9a4682',
+    messagingSenderId: '884502786471',
+    projectId: 'roadway-core',
+    authDomain: 'roadway-core.firebaseapp.com',
+    databaseURL: 'https://roadway-core-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'roadway-core.appspot.com',
+    measurementId: 'G-XZG6F0HG1X',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCLqjokL7wM3eTiDQ6u1Q-dvSxaWYZ-zSo',
-    appId: '1:98529474187:android:d4815a231bc76c5968868e',
-    messagingSenderId: '98529474187',
-    projectId: 'commutenepal-d601d',
-    databaseURL: 'https://commutenepal-d601d-default-rtdb.firebaseio.com',
-    storageBucket: 'commutenepal-d601d.appspot.com',
+    apiKey: 'AIzaSyAIse5zEqNUNZmlOEATdxSW-XeyOQQULQ8',
+    appId: '1:884502786471:android:e6d8965da118dbc39a4682',
+    messagingSenderId: '884502786471',
+    projectId: 'roadway-core',
+    databaseURL: 'https://roadway-core-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'roadway-core.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD6u8VZovykRj1UfS111Nyi-OvA5tX34hw',
-    appId: '1:98529474187:ios:c672ff3168782f1c68868e',
-    messagingSenderId: '98529474187',
-    projectId: 'commutenepal-d601d',
-    databaseURL: 'https://commutenepal-d601d-default-rtdb.firebaseio.com',
-    storageBucket: 'commutenepal-d601d.appspot.com',
-    androidClientId: '98529474187-837420s3ejhjmelj815sf1hsnaqe6mth.apps.googleusercontent.com',
-    iosClientId: '98529474187-tdj5bktfsg4e98pk80uh5quksh7pcno9.apps.googleusercontent.com',
-    iosBundleId: 'com.example.commuteNepal',
+    apiKey: 'AIzaSyB1-Uo9DPUdKP3atZ8oM6GcyKoJW6sZen8',
+    appId: '1:884502786471:ios:b2718ea7a599ab569a4682',
+    messagingSenderId: '884502786471',
+    projectId: 'roadway-core',
+    databaseURL: 'https://roadway-core-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'roadway-core.appspot.com',
+    androidClientId: '884502786471-1e7e1utjaht4c67rfaf6tg2tphukfdvb.apps.googleusercontent.com',
+    iosClientId: '884502786471-t4jtgrfr84qnkpqh6fd7vrg245k8qf2n.apps.googleusercontent.com',
+    iosBundleId: 'com.example.roadwayCore',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD6u8VZovykRj1UfS111Nyi-OvA5tX34hw',
-    appId: '1:98529474187:ios:c672ff3168782f1c68868e',
-    messagingSenderId: '98529474187',
-    projectId: 'commutenepal-d601d',
-    databaseURL: 'https://commutenepal-d601d-default-rtdb.firebaseio.com',
-    storageBucket: 'commutenepal-d601d.appspot.com',
-    androidClientId: '98529474187-837420s3ejhjmelj815sf1hsnaqe6mth.apps.googleusercontent.com',
-    iosClientId: '98529474187-tdj5bktfsg4e98pk80uh5quksh7pcno9.apps.googleusercontent.com',
-    iosBundleId: 'com.example.commuteNepal',
+    apiKey: 'AIzaSyB1-Uo9DPUdKP3atZ8oM6GcyKoJW6sZen8',
+    appId: '1:884502786471:ios:b2718ea7a599ab569a4682',
+    messagingSenderId: '884502786471',
+    projectId: 'roadway-core',
+    databaseURL: 'https://roadway-core-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'roadway-core.appspot.com',
+    androidClientId: '884502786471-1e7e1utjaht4c67rfaf6tg2tphukfdvb.apps.googleusercontent.com',
+    iosClientId: '884502786471-t4jtgrfr84qnkpqh6fd7vrg245k8qf2n.apps.googleusercontent.com',
+    iosBundleId: 'com.example.roadwayCore',
   );
 }

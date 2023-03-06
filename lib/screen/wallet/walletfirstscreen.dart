@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WalletFirstScreen extends StatefulWidget {
   const WalletFirstScreen({super.key});
@@ -8,6 +12,74 @@ class WalletFirstScreen extends StatefulWidget {
 }
 
 class _WalletFirstScreenState extends State<WalletFirstScreen> {
+   File? img; 
+
+   Future _loadImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+      final path = 'verification/profile/${image!.name}';
+
+      if (image != null) {
+        setState(() {
+          img = File(image.path);
+        });
+      } else {
+        return;
+      }
+    } catch (e) {
+      debugPrint('Failed to pick Image $e');
+    }
+  }
+
+
+
+
+   void _showActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        color: Colors.white,
+        child: CupertinoActionSheet(
+          title: const Text('Choose one option'),
+        
+          // message: const Text('Message'),
+          actions: <CupertinoActionSheetAction>[
+             CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: GestureDetector(
+                  onTap: () {
+                  _loadImage(ImageSource.gallery);
+                  },
+              child: Text('Esewa')),
+                     ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+               child: GestureDetector(
+                  onTap: () {
+                  _loadImage(ImageSource.gallery);
+                  },
+              child: Text('Khalti')),
+            ),
+            CupertinoActionSheetAction(
+              /// This parameter indicates the action would perform
+              /// a destructive action such as delete or exit and turns
+              /// the action's text color to red.
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -256,9 +328,16 @@ class _WalletFirstScreenState extends State<WalletFirstScreen> {
                                   ),
                                 ],
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: Icon(Icons.add_circle_rounded),
+                              GestureDetector (
+                                onTap: (){
+                                  _showActionSheet(context);
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.only(right: 10.0),
+                                  child: Icon(Icons.add_circle_rounded)
+                                  ,
+                                  
+                                ),
                               )
                             ]),
                         const SizedBox(

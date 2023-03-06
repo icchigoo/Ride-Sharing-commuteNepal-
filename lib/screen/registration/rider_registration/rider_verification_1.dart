@@ -108,7 +108,7 @@ class _RiderVerificationScreen1State extends State<RiderVerificationScreen1> {
           FirebaseFirestore.instance.collection('user').doc(user!.uid);
 
       await riderVerification.update({
-        'personal_verification': json,
+        'vpersonal_verification': json,
       });
       Navigator.pushNamed(context, '/rider_verf_2');
       isLoading = false;

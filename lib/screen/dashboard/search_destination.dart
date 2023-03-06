@@ -1,5 +1,3 @@
-// ignore_for_file: sort_child_properties_last
-
 import 'dart:async';
 import 'dart:io';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -7,15 +5,19 @@ import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:bs_flutter_buttons/bs_flutter_buttons.dart';
 import 'package:bs_flutter_card/bs_flutter_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:commute_nepal/api/get_directions.dart';
+import 'package:commute_nepal/api/FireHelpher.dart';
 import 'package:commute_nepal/api/getcurrentuserinfo.dart';
+import 'package:commute_nepal/api/helpher_methods.dart';
 import 'package:commute_nepal/dataprovider/appdata.dart';
+import 'package:commute_nepal/global_variable.dart';
 import 'package:commute_nepal/model/address.dart';
 import 'package:commute_nepal/model/directiondetails.dart';
+import 'package:commute_nepal/model/nearby_drivers.dart';
 import 'package:commute_nepal/model/places_model.dart';
 import 'package:commute_nepal/widgets/custom_button.dart';
 import 'package:commute_nepal/widgets/location_list_tile.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,7 @@ class SeachDestination extends StatefulWidget {
 class _SeachDestinationState extends State<SeachDestination>
     with TickerProviderStateMixin {
   List<Features> lstplaces = [];
-  final Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? _controller;
   TextEditingController seach_destination = new TextEditingController();
   bool isLoading = false;
   double rideBottonSheet = 0;
@@ -51,6 +53,8 @@ class _SeachDestinationState extends State<SeachDestination>
     target: LatLng(27.70539567242726, 85.32745790722771),
     zoom: 14.4746,
   );
+
+  // Nearby drivers
 
   DetailsResult? startPosition;
   DetailsResult? endPosition;
@@ -70,6 +74,37 @@ class _SeachDestinationState extends State<SeachDestination>
 
   DirectionDetails tripDirectionDetails = DirectionDetails();
 
+  // markers list
+  Set<Marker> _markers = {};
+
+  bool nearbyDriverKeysLoaded = false;
+
+  BitmapDescriptor markerImage = BitmapDescriptor.defaultMarker;
+  void createMarker() {
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration.empty, 'assets/images/car_1.png')
+        .then((icon) => {markerImage = icon});
+  }
+
+  void updateDriversOnMap() {
+    Set<Marker> tempMarkers = Set<Marker>();
+    for (NearbyDrivers driver in FireHelpher.nearbyDriversList) {
+      LatLng driverPosition =
+          LatLng(driver.latitude as double, driver.longitude as double);
+      Marker marker = Marker(
+        markerId: MarkerId('driver${driver.key}'),
+        position: driverPosition,
+        icon: markerImage,
+        rotation: HelpherMethods.generateRandomNumber(360),
+        infoWindow: InfoWindow(title: 'Driver ${driver.key}'),
+      );
+      tempMarkers.add(marker);
+    }
+    setState(() {
+      _markers = tempMarkers;
+    });
+  }
+
   // get current location and set marker
   void getCurrentPositon() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -84,10 +119,11 @@ class _SeachDestinationState extends State<SeachDestination>
       CameraPosition cameraPosition = CameraPosition(
           target: LatLng(currentPosition.latitude, currentPosition.longitude),
           zoom: 14);
-      final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      _controller
+          ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
       setState(() {});
     }
+    startGeofireListner();
   }
 
   void getPolyPoints() async {
@@ -106,7 +142,6 @@ class _SeachDestinationState extends State<SeachDestination>
   }
 
   void autoCompleteSearch(String value) async {
-    print("yessssssssssss");
     var result = await googlePlace.autocomplete.get(value);
     if (result != null && result.predictions != null && mounted) {
       setState(() {
@@ -160,6 +195,46 @@ class _SeachDestinationState extends State<SeachDestination>
 
       _polylines.add(polyline);
     });
+
+    // set marker
+    Marker startMarker = Marker(
+      markerId: MarkerId("start"),
+      position: _sourceLocation,
+      infoWindow: InfoWindow(title: pickup.placeName, snippet: "My Location"),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+    );
+    Marker destinationMarker = Marker(
+      markerId: MarkerId("destination"),
+      position: _destinationLocation,
+      infoWindow:
+          InfoWindow(title: destination.placeName, snippet: "Destination"),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+    );
+
+    setState(() {
+      _markers.add(startMarker);
+      _markers.add(destinationMarker);
+    });
+
+    LatLngBounds bounds;
+
+    if (pickLatLng.latitude > destLatLng.latitude &&
+        pickLatLng.longitude > destLatLng.longitude) {
+      bounds = LatLngBounds(southwest: destLatLng, northeast: pickLatLng);
+    } else if (pickLatLng.longitude > destLatLng.longitude) {
+      bounds = LatLngBounds(
+          southwest: LatLng(pickLatLng.latitude, destLatLng.longitude),
+          northeast: LatLng(destLatLng.latitude, pickLatLng.longitude));
+    } else if (pickLatLng.latitude > destLatLng.latitude) {
+      bounds = LatLngBounds(
+          southwest: LatLng(destLatLng.latitude, pickLatLng.longitude),
+          northeast: LatLng(pickLatLng.latitude, destLatLng.longitude));
+    } else {
+      bounds = LatLngBounds(southwest: pickLatLng, northeast: destLatLng);
+    }
+
+    // animate camera to fit bounds
+    _controller?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
   }
 
   void createRidequest() {
@@ -186,7 +261,8 @@ class _SeachDestinationState extends State<SeachDestination>
       'location': pickupMap,
       'destination': destinationMap,
       'payment_method': 'cash',
-      'driver_id': "waiting"
+      'driver_id': "waiting",
+      'status': "waiting",
     };
     rideRef.set(riderMap);
   }
@@ -195,12 +271,13 @@ class _SeachDestinationState extends State<SeachDestination>
   @override
   void initState() {
     // getPolyPoints();
-
+    createMarker();
     super.initState();
     String apiKey = 'AIzaSyDoR83pkKYmuS6nHWU-Fk4F2uCd2K5ZV0g';
     googlePlace = GooglePlace(apiKey);
     startFocusNode = FocusNode();
     endFocusNode = FocusNode();
+
     getCurrentPositon();
     CurrentUser.getCurrentUser(context);
 
@@ -231,6 +308,8 @@ class _SeachDestinationState extends State<SeachDestination>
     });
   }
 
+  List<NearbyDrivers>? availableDrivers;
+
   @override
   Widget build(BuildContext context) {
     address = Provider.of<AppData>(context).address1;
@@ -253,19 +332,20 @@ class _SeachDestinationState extends State<SeachDestination>
               myLocationEnabled: true,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
+                _controller = controller;
               },
               polylines: _polylines,
-              markers: {
-                Marker(
-                  markerId: const MarkerId('source'),
-                  position: _sourceLocation,
-                ),
-                Marker(
-                  markerId: const MarkerId('destination'),
-                  position: _destinationLocation,
-                ),
-              },
+              markers: _markers,
+              // {
+              //   Marker(
+              //     markerId: const MarkerId('source'),
+              //     position: _sourceLocation,
+              //   ),
+              //   Marker(
+              //     markerId: const MarkerId('destination'),
+              //     position: _destinationLocation,
+              //   ),
+              // },
             ),
           ),
           Container(
@@ -778,13 +858,13 @@ class _SeachDestinationState extends State<SeachDestination>
                             ),
                             Expanded(child: Container()),
                             // add rupes sysmbol
-                            Text(
-                              (tripDirectionDetails != null)
-                                  ? "Rs. ${HelpherMethods.estimatedFare(tripDirectionDetails!)}"
-                                  : "",
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400),
-                            ),
+                            // Text(
+                            //   (tripDirectionDetails != null)
+                            //       ? "Rs. ${HelpherMethods.estimatedFare(tripDirectionDetails)}"
+                            //       : "",
+                            //   style: const TextStyle(
+                            //       fontSize: 18, fontWeight: FontWeight.w400),
+                            // ),
                           ],
                         ),
                       )
@@ -798,6 +878,8 @@ class _SeachDestinationState extends State<SeachDestination>
                       createRidequest();
                       showSheet();
                       Navigator.pop(context);
+                      availableDrivers = FireHelpher.nearbyDriversList;
+                      findDriver();
 
                       // createRidequest();
                     })
@@ -806,6 +888,100 @@ class _SeachDestinationState extends State<SeachDestination>
           );
         });
   }
-  // make widget function for dragable bottom sheet
 
+  // geoLocator
+  void startGeofireListner() {
+    Geofire.initialize('driverAvailable');
+    Geofire.queryAtLocation(
+            currentPosition!.latitude, currentPosition!.longitude, 20)
+        ?.listen((map) {
+      print(map);
+      if (map != null) {
+        var callBack = map['callBack'];
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            NearbyDrivers nearbyDrivers = NearbyDrivers();
+            nearbyDrivers.key = map['key'];
+            nearbyDrivers.latitude = map['latitude'];
+            nearbyDrivers.longitude = map['longitude'];
+            FireHelpher.nearbyDriversList.add(nearbyDrivers);
+            if (nearbyDriverKeysLoaded) {
+              updateDriversOnMap();
+            }
+            break;
+
+          case Geofire.onKeyExited:
+            FireHelpher.removeFromList(map['key']);
+            updateDriversOnMap();
+            break;
+
+          case Geofire.onKeyMoved:
+            NearbyDrivers nearbyDrivers = NearbyDrivers();
+            nearbyDrivers.key = map['key'];
+            nearbyDrivers.latitude = map['latitude'];
+            nearbyDrivers.longitude = map['longitude'];
+            FireHelpher.updateNearbyLocation(nearbyDrivers);
+            updateDriversOnMap();
+
+            break;
+
+          case Geofire.onGeoQueryReady:
+            // All Intial Data is loaded
+            print('Prre ${FireHelpher.nearbyDriversList.length}');
+            updateDriversOnMap();
+            break;
+        }
+      }
+
+      setState(() {});
+    });
+  }
+
+  void findDriver() {
+    if (availableDrivers!.length == 0) {
+      cancelRequest();
+      // show no driver available text in dialog
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text("No Driver Available"),
+              content: Text("Please try again later"),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text("Dismiss"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ],
+            );
+          });
+
+      return;
+    }
+
+    var driver = availableDrivers![0];
+    notifyDriver(driver);
+    availableDrivers!.removeAt(0);
+    print(driver.key);
+  }
+
+  void notifyDriver(NearbyDrivers driver) async {
+    DatabaseReference driverTripRef =
+        FirebaseDatabase.instance.ref().child('user/${driver.key}/newRide');
+    driverTripRef.set(rideRef.key);
+
+    // get token
+    DatabaseReference tokenRef =
+        FirebaseDatabase.instance.ref().child('user/${driver.key}/token');
+
+    DatabaseEvent event = await tokenRef.once();
+    if (event.snapshot.value != null) {
+      String token = event.snapshot.value.toString();
+      // send push notification
+      HelpherMethods.sendNotification(token, context, rideRef.key);
+    }
+  }
 }

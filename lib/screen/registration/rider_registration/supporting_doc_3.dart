@@ -307,7 +307,7 @@ class _SupportingDoc3State extends State<SupportingDoc3> {
           FirebaseFirestore.instance.collection('user').doc(user!.uid);
 
       await riderVerification.update({
-        'supporting_documents': json,
+        'vsupporting_documents': json,
       });
       setState(() {
         isLoading = false;

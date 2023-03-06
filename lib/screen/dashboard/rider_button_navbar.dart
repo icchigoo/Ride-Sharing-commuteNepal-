@@ -1,5 +1,5 @@
 import 'package:commute_nepal/screen/income/income_history.dart';
-import 'package:commute_nepal/screen/profile/profilescreen.dart';
+import 'package:commute_nepal/screen/profile/ridersprofile.dart';
 import 'package:commute_nepal/screen/rider_section/rider_dashboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class _RiderNavbarState extends State<RiderNavbar> {
   List<Widget> lstWidget = [
     const RiderDashboardScreen(),
     const IncomeHistoryScreen(),
-    const ProfileScreen(),
+    const RiderProfile(),
   ];
   @override
   Widget build(BuildContext context) {

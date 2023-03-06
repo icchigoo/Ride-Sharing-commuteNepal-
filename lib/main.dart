@@ -9,6 +9,7 @@ import 'package:commute_nepal/screen/dashboard/search_destination.dart';
 import 'package:commute_nepal/screen/income/income_history.dart';
 import 'package:commute_nepal/screen/profile/editprofile.dart';
 import 'package:commute_nepal/screen/profile/profilescreen.dart';
+import 'package:commute_nepal/screen/profile/ridersprofile.dart';
 import 'package:commute_nepal/screen/rating_reviews/rate_reviews.dart';
 import 'package:commute_nepal/screen/registration/EnterPhone_Screen.dart';
 import 'package:commute_nepal/screen/registration/OtpScreen.dart';
@@ -20,15 +21,23 @@ import 'package:commute_nepal/screen/registration/rider_registration/supporting_
 import 'package:commute_nepal/screen/ride%20history/ridehistory.dart';
 import 'package:commute_nepal/screen/rider_section/new_ridepage.dart';
 import 'package:commute_nepal/screen/wallet/walletfirstscreen.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'api/getridehistory.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
 }
+// void autologin(){
+//   if (FirebaseAuth.instance.currentUser != null) {
+//     Navigator.pushNamed(context, routeName)
+//   }
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +52,7 @@ void main() async {
         channelKey: 'basic_channel',
         channelName: 'Basic notifications',
         channelDescription: 'Notification channel for basic tests',
-        defaultColor: Color(0xFF9D50DD),
+        defaultColor: const Color(0xFF9D50DD),
         ledColor: Colors.white,
       ),
     ],
@@ -76,8 +85,9 @@ class MyApp extends StatelessWidget {
       create: (context) => AppData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: '/enter_phone',
+        initialRoute: '/dashboard',
         routes: {
+          '/getridehistory': (context) => UserInformation(),
           '/ratenreviews': (context) => const RateReviewScreen(),
           '/enter_phone': (context) => const EnterPhoneScreen(),
           '/verify_otp': (context) => const OtpScreen(),
@@ -87,18 +97,18 @@ class MyApp extends StatelessWidget {
           '/user_registation': (context) => UserRegistrationScreen(),
           '/rider_verf_3': (context) => const SupportingDoc3(),
           '/rider_verf_2': (context) => const RiderVerificationScreen2(),
-          '/dashboard': (context) => Navbar(),
+          '/dashboard': (context) => const Navbar(),
           '/SeachDestination': (context) => const SeachDestination(),
           '/SearchScreen': (context) => SearchScreen(),
           '/profile': (context) => const ProfileScreen(),
           '/test_screen': (context) => const TestScreen(),
-          // rider dashboard
           '/rider_dashboard': (context) => const RiderNavbar(),
           '/walletfirstscreen': (context) => const WalletFirstScreen(),
           '/ride_history': (context) => const RideHistoryScreen(),
           '/incomehistory': (context) => const IncomeHistoryScreen(),
           '/editprofile': (context) => const EditProfilePage(),
-          '/newtrip': (context) => const NewTripScreen()
+          '/newtrip': (context) => const NewTripScreen(),
+          '/riderprofile': (context) => const RiderProfile(),
         },
       ),
     );

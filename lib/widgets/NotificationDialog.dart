@@ -1,13 +1,62 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:commute_nepal/model/driver_model/driver_trip_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:snack/snack.dart';
+
 class NotificationDialog extends StatelessWidget {
   const NotificationDialog({super.key, required this.tripDetails});
 
   final DriverTripDetails tripDetails;
+
+  void checkAvailability(context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActivityIndicator(
+          radius: 20,
+          color: Colors.white,
+        );
+      },
+    );
+
+    // firebase current user id
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userId = user!.uid;
+    String thisRideId = '';
+    DatabaseReference docRef =
+        FirebaseDatabase.instance.ref('user/$userId/newRide');
+    DatabaseEvent event = await docRef.once();
+    Navigator.pop(context);
+    if (event.snapshot.value != null) {
+      thisRideId = event.snapshot.value.toString();
+    }
+
+    if (thisRideId == tripDetails.rideID) {
+      docRef.set('-NIHyjSDpe5WvAgEAGX9');
+      Navigator.pushNamed(context, '/newtrip', arguments: {
+        'rideID': tripDetails.rideID,
+        'riderName': tripDetails.riderName,
+        'pickupAddress': tripDetails.pickupAddress,
+        'dropoffAddress': tripDetails.destinationAddress,
+        'pickup': tripDetails.pickup,
+        'destination': tripDetails.destination,
+        'paymentMethod': tripDetails.paymentMethod,
+      });
+    } else if (thisRideId == 'cancelled') {
+      SnackBar(content: Text('Ride Cancelled')).show(context);
+    } else if (thisRideId == 'timeout') {
+      SnackBar(content: Text('Ride Timed Out')).show(context);
+    } else {
+      SnackBar(content: Text('Ride no longer available')).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +204,7 @@ class NotificationDialog extends StatelessWidget {
                     ),
                     // name
                     Text(
-                      'Rabi Lamichhane',
+                      tripDetails.riderName!,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -274,6 +323,7 @@ class NotificationDialog extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/newtrip');
+                            checkAvailability(context);
                           },
                           child: Text(
                             'Accept',

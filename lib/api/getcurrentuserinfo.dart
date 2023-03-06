@@ -8,6 +8,7 @@ class CurrentUser {
   static getCurrentUser(BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     String? uuid = auth.currentUser!.uid;
+
     final doc = await FirebaseFirestore.instance
         .collection('user')
         .doc(uuid)
@@ -16,7 +17,6 @@ class CurrentUser {
       print(userData.data());
       // map userdata and print key and value
       userData.data()!.forEach((key, value) {
-        print(key);
         Provider.of<AppData>(context, listen: false)
             .SetName(value['firstName'], value['lastName']);
       });

@@ -9,7 +9,7 @@ const AdminHeader =()=>{
     return(
     <>
          <div>
-            <h1 class="text-center">commutenepal Admin Panel</h1>
+            <h1 class="text-center">Roadway Admin Panel</h1>
         </div>
 
         {/* <nav class="navbar navbar-expand-lg bg-dark">

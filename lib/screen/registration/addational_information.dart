@@ -217,6 +217,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'email': _emailController.text,
           'uuid': user.uid,
           'isRider': true,
+          'newRide': 'waiting'
         }
       });
 
@@ -228,6 +229,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
         'email': _emailController.text,
         'uuid': user.uid,
         'isRider': true,
+        'newRide': 'waiting'
       };
       newUserRef.set(userMap);
 
@@ -268,6 +270,17 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
           'uid': user!.uid,
         },
       );
+
+      DatabaseReference newUserRef =
+          FirebaseDatabase.instance.ref().child('user/${user!.uid}');
+      Map userMap = {
+        'firstName': _firstnameController.text,
+        'lastName': _lastnameController.text,
+        'email': _emailController.text,
+        'uuid': user!.uid,
+        'isRider': true,
+      };
+      newUserRef.set(userMap);
       Navigator.pushNamed(context, '/dashboard');
     } on FirebaseAuthException catch (e) {
       print(e.message);

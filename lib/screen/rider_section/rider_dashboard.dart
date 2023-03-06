@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:slider_button/slider_button.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 import 'package:snack/snack.dart';
@@ -30,7 +31,6 @@ class _RiderDashboardScreenState extends State<RiderDashboardScreen> {
     const IncomeHistoryScreen(),
     const RiderDashboardScreen(),
   ];
-  Position? currentPosition;
 
   DocumentReference? trigRequestRef;
   LatLng _currentLocation = LatLng(0.0, 0.0);

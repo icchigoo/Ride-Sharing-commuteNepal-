@@ -1,8 +1,12 @@
 import 'dart:async';
 
-import 'package:commute_nepal/api/get_directions.dart';
+import 'package:commute_nepal/api/helpher_methods.dart';
 import 'package:commute_nepal/dataprovider/appdata.dart';
-import 'package:commute_nepal/widgets/custom_button.dart';
+import 'package:commute_nepal/global_variable.dart';
+import 'package:commute_nepal/model/driver_model/driver_trip_details.dart';
+import 'package:commute_nepal/widgets/collect_payment.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -14,6 +18,7 @@ import 'package:provider/provider.dart';
 
 class NewTripScreen extends StatefulWidget {
   const NewTripScreen({super.key});
+  // name
 
   @override
   State<NewTripScreen> createState() => _NewTripScreenState();
@@ -22,10 +27,20 @@ class NewTripScreen extends StatefulWidget {
 class _NewTripScreenState extends State<NewTripScreen> {
   late GoogleMapController mapController;
   final Completer<GoogleMapController> _controller = Completer();
+  DriverTripDetails driverTripDetails = DriverTripDetails();
   static const CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(27.70539567242726, 85.32745790722771),
     zoom: 14.4746,
   );
+
+  bool isRequestingDirection = false;
+
+  @override
+  void initState() {
+    acceptTrip();
+    // TODO: implement initState
+    super.initState();
+  }
 
   void _openLoadingDialog(BuildContext context) {
     showDialog(
@@ -50,10 +65,175 @@ class _NewTripScreenState extends State<NewTripScreen> {
   Set<Polyline> _polyLines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
 
+  String? name;
+
+  String buttonTitle = "I ARRIVED";
+  Color buttonColor = Colors.black;
+
+  String? rideID;
+  String status = "accepted";
+  LatLng pickup = LatLng(0, 0);
+  LatLng destination = LatLng(0, 0);
+  String durationString = "";
+  String paymentMethod = "";
+
+  void acceptTrip() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      rideRef = FirebaseDatabase.instance.ref('riderequest/$rideID');
+      rideRef!.child('status').set('accepted');
+      rideRef!.child('driver_name').set(name);
+
+      Map locationMap = {
+        'latitude': position.latitude,
+        'longitude': position.longitude,
+      };
+      rideRef!.child('driver_location').set(locationMap);
+
+      DatabaseReference historyRef = FirebaseDatabase.instance
+          .ref()
+          .child('user/${user!.uid}/history/$rideID');
+      historyRef.set(true);
+    } catch (e) {
+      print('Error : $e');
+    }
+  }
+
+  var geoLocator = Geolocator();
+  BitmapDescriptor? movingMarker = BitmapDescriptor.defaultMarker;
+
+  void getLocationUpdates() {
+    ridePositionStream =
+        Geolocator.getPositionStream().listen((Position position) {
+      currentPosition = position;
+
+      LatLng pos = LatLng(position.latitude, position.longitude);
+      Marker movingMarker = Marker(
+        markerId: MarkerId('moving'),
+        position: pos,
+        icon: BitmapDescriptor.defaultMarker,
+        infoWindow: const InfoWindow(title: 'Current Location'),
+      );
+
+      setState(() {
+        CameraPosition cp = CameraPosition(
+          target: pos,
+          zoom: 17,
+        );
+        rideMapController!.animateCamera(
+          CameraUpdate.newCameraPosition(cp),
+        );
+        _markers.removeWhere((marker) => marker.markerId.value == 'moving');
+        _markers.add(movingMarker);
+      });
+      updateTripDetails();
+      Map locationMap = {
+        'latitude': currentPosition!.latitude,
+        'longitude': currentPosition!.longitude,
+      };
+      rideRef!.child('driver_location').set(locationMap);
+    });
+  }
+
+  Timer? timer;
+
+  int durationCounter = 0;
+
+  void startTimer() {
+    const interval = Duration(seconds: 1);
+    timer = Timer.periodic(interval, (timer) {
+      durationCounter++;
+    });
+  }
+
+  void updateTripDetails() async {
+    if (!isRequestingDirection) {
+      isRequestingDirection = true;
+      if (ridePositionStream != null) {
+        return;
+      }
+
+      var positionLatLng =
+          LatLng(currentPosition!.latitude, currentPosition!.longitude);
+      LatLng destinationLatLng;
+
+      if (status == 'accepted') {
+        destinationLatLng = pickup;
+      } else {
+        destinationLatLng = destination;
+      }
+
+      var directionDetails = await HelpherMethods.getDirectionDetails(
+          positionLatLng, destinationLatLng);
+
+      if (directionDetails != null) {
+        print(directionDetails.durationText);
+        setState(() {
+          durationString = directionDetails.durationText!;
+        });
+      }
+    }
+    isRequestingDirection = false;
+  }
+
+  void endTrip() async {
+    print("teipend");
+    timer!.cancel();
+    HelpherMethods.showProgressDialog(context);
+    var currentLatLng =
+        LatLng(currentPosition!.latitude, currentPosition!.longitude);
+    var directionDetails =
+        await HelpherMethods.getDirectionDetails(pickup, currentLatLng);
+    Navigator.pop(context);
+    int fareAmount =
+        HelpherMethods.estimatedFare(directionDetails!, durationCounter);
+    rideRef!.child('fares').set(fareAmount.toString());
+    rideRef!.child('status').set('ended');
+    ridePositionStream!.cancel();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            CollectPayment(paymentMethod: paymentMethod, fares: fareAmount));
+
+    topupEarning(fareAmount as int);
+  }
+
+  void topupEarning(int fares) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      DatabaseReference earningRef =
+          FirebaseDatabase.instance.ref().child('user/${user!.uid}/earnings}');
+      DatabaseEvent event = await earningRef.once();
+      if (event.snapshot.value != null) {
+        double oldEarnings = double.parse(event.snapshot.value.toString());
+        double updatedEarnings = (fares.toDouble() * 0.85) + oldEarnings;
+        earningRef.set(updatedEarnings.toStringAsFixed(2));
+      } else {
+        double updatedEarnings = (fares.toDouble() * 0.85);
+        earningRef.set(updatedEarnings.toStringAsFixed(2));
+      }
+    } catch (e) {
+      print('xerro : $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     LatLng? currentPosition =
         Provider.of<AppData>(context, listen: false).currentPosition;
+
+    LatLng? pickupLatLng =
+        Provider.of<AppData>(context, listen: false).driverPickUpLocation;
+    name = Provider.of<AppData>(context).fullname;
+    // String? riderName = widget.driverTripDetails!.rideID;
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
+    rideID = args['rideID'];
+    pickup = args['pickup'];
+    destination = args['destination'];
+    paymentMethod = args['paymentMethod'];
     return Scaffold(
         body: Stack(
       children: [
@@ -61,7 +241,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
           zoomControlsEnabled: false,
           mapType: MapType.normal,
           myLocationEnabled: true,
-          // circles: _circles,
+          circles: _circles,
           markers: _markers,
           polylines: _polyLines,
           initialCameraPosition: _kGooglePlex,
@@ -71,11 +251,13 @@ class _NewTripScreenState extends State<NewTripScreen> {
             Position position = await Geolocator.getCurrentPosition(
                 desiredAccuracy: LocationAccuracy.bestForNavigation);
 
-            var pickupLatLng = LatLng(position.latitude,
+            var currentLatLng = LatLng(position.latitude,
                 position.longitude); // add to curent location
-            var destinationLatLng = LatLng(27.713547, 85.315410);
-            await getDirection(pickupLatLng, destinationLatLng);
+            await getDirection(currentLatLng, pickupLatLng!);
+            getLocationUpdates();
             _closeLoadingDialog(context);
+
+            // getLocationUpdates();
           },
         ),
         Positioned(
@@ -104,12 +286,26 @@ class _NewTripScreenState extends State<NewTripScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Text(
+                      //   "Estimated time: $durationString",
+                      //   style: TextStyle(
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.bold,
+                      //       color: Colors.green),
+                      // ),
                       Text(
-                        "Estimated time: 14 Min",
+                        "Ongoing trip",
                         style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.green),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      LinearProgressIndicator(
+                        backgroundColor: Colors.grey,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                       ),
 
                       SizedBox(
@@ -119,7 +315,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Rabi Lamichanne",
+                            args['riderName'],
                             style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w800,
@@ -163,7 +359,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         child: Container(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Kapan, Kathmandu',
+                            args['pickupAddress'],
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -201,7 +397,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         child: Container(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Kalimati, Kathmandu",
+                            args['dropoffAddress'],
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -210,12 +406,38 @@ class _NewTripScreenState extends State<NewTripScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 10,
                       ),
-                      CustomButton(
-                        text: "I ARRIVED!",
-                        loading: false,
-                        onPressed: () {},
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: buttonColor,
+                          minimumSize: const Size.fromHeight(45),
+                          // NEW
+                        ),
+                        child: Text('$buttonTitle'),
+                        onPressed: () async {
+                          if (status == 'accepted') {
+                            status = 'arrived';
+                            rideRef!.child("status").set('arrived');
+                            setState(() {
+                              buttonTitle = 'START TRIP';
+                              buttonColor = Colors.green;
+                            });
+                            // HelpherMethods.showProgressDialog(context);
+                            await getDirection(pickup, destination);
+                            _closeLoadingDialog(context);
+                          } else if (status == "arrived") {
+                            status = 'ontrip';
+                            rideRef!.child("status").set('ontrip');
+                            setState(() {
+                              buttonTitle = 'END TRIP';
+                              buttonColor = Colors.red;
+                            });
+                            startTimer();
+                          } else if (status == 'ontrip') {
+                            endTrip();
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -266,5 +488,26 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
       _polyLines.add(polyline);
     });
+
+    LatLngBounds bounds;
+    if (pickupLatLng.latitude > destinationLatLng.latitude &&
+        pickupLatLng.longitude > destinationLatLng.longitude) {
+      bounds =
+          LatLngBounds(southwest: destinationLatLng, northeast: pickupLatLng);
+    } else if (pickupLatLng.longitude > destinationLatLng.longitude) {
+      bounds = LatLngBounds(
+          southwest: LatLng(pickupLatLng.latitude, destinationLatLng.longitude),
+          northeast:
+              LatLng(destinationLatLng.latitude, pickupLatLng.longitude));
+    } else if (pickupLatLng.latitude > destinationLatLng.latitude) {
+      bounds = LatLngBounds(
+          southwest: LatLng(destinationLatLng.latitude, pickupLatLng.longitude),
+          northeast:
+              LatLng(pickupLatLng.latitude, destinationLatLng.longitude));
+    } else {
+      bounds =
+          LatLngBounds(southwest: pickupLatLng, northeast: destinationLatLng);
+    }
+    rideMapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
   }
 }

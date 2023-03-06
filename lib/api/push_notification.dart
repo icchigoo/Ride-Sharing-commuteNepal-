@@ -1,4 +1,6 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:commute_nepal/model/driver_model/driver_trip_details.dart';
 import 'package:commute_nepal/widgets/NotificationDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,23 +18,23 @@ class PushNotificationService {
     print("Notification service started");
     try {
       FirebaseMessaging messaging = FirebaseMessaging.instance;
-      NotificationSettings settings = await messaging.requestPermission(
-          alert: true,
-          announcement: true,
-          badge: true,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-          sound: true);
+      // NotificationSettings settings = await messaging.requestPermission(
+      //     alert: true,
+      //     announcement: true,
+      //     badge: true,
+      //     carPlay: false,
+      //     critical : false,
+      //     provisional: false,
+      //     sound: true);
 
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print("Notification permission granted");
-      } else if (settings.authorizationStatus ==
-          AuthorizationStatus.provisional) {
-        print('user granted provisional authorization');
-      } else {
-        print('user denied authorization');
-      }
+      // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      //   print("Notification permission granted");
+      // } else if (settings.authorizationStatus ==
+      //     AuthorizationStatus.provisional) {
+      //   print('user granted provisional authorization');
+      // } else {
+      //   print('user denied authorization');
+      // }
 
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         // print('Message data: ${message.data}');
@@ -103,6 +105,9 @@ class PushNotificationService {
 
         double pickupLat = map['location']['latitude'];
         double pickupLng = map['location']['longitude'];
+
+        // latLng
+        LatLng pickupLatLng = LatLng(pickupLat, pickupLng);
         String pickupAddress = map['pickup_address'];
 
         // destination
@@ -111,6 +116,7 @@ class PushNotificationService {
         String destinationAddress = map['destination_address'];
 
         String paymentMethod = map['payment_method'];
+        String riderName = map['rider_name'];
 
         DriverTripDetails tripDetails = DriverTripDetails();
         tripDetails.rideID = rideID;
@@ -119,6 +125,17 @@ class PushNotificationService {
         tripDetails.pickup = LatLng(pickupLat, pickupLng);
         tripDetails.destination = LatLng(destinationLat, destinationLng);
         tripDetails.paymentMethod = paymentMethod;
+        tripDetails.riderName = riderName;
+
+        // update on provider
+        Provider.of<AppData>(context, listen: false)
+            .updateDriverPickUpLocation(pickupLatLng);
+
+        AssetsAudioPlayer.newPlayer().open(
+          Audio("sounds/alert.mp3"),
+          autoStart: true,
+          showNotification: true,
+        );
 
         showDialog(
             context: context,

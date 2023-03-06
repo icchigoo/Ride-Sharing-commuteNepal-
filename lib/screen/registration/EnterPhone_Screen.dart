@@ -1,13 +1,20 @@
+import 'package:commute_nepal/dataprovider/appdata.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/custom_button.dart';
+
 import 'package:snack/snack.dart';
 
 class EnterPhoneScreen extends StatefulWidget {
   const EnterPhoneScreen({super.key});
   static String verify = "";
+  static String phoneNumber = "";
+  static Function()? phoneVerification;
   @override
   State<EnterPhoneScreen> createState() => _EnterPhoneScreenState();
 }
@@ -15,8 +22,65 @@ class EnterPhoneScreen extends StatefulWidget {
 class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
   final _formKey = GlobalKey<FormState>();
   var phoneNumber = "";
+  var resenToken;
   bool isLoading = false;
+  _navigateToScreen(bool isLogin) {
+    if (isLogin) {
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } else {
+      const SnackBar(content: Text('Session has been experied!')).show(context);
+    }
+  }
+
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  phoneVerification(String phone) async {
+    await auth.verifyPhoneNumber(
+      phoneNumber: '+977$phone',
+      timeout: const Duration(seconds: 30),
+      forceResendingToken: resenToken,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          SnackBar(content: Text('Invalid Phone Number')).show(context);
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        Provider.of<AppData>(context, listen: false)
+            .setVerification(verificationId);
+
+        EnterPhoneScreen.verify = verificationId;
+        // print("IDDDDDDDDDDDDDDDDDDD $verificationId");
+        Navigator.pushNamed(context, '/verify_otp');
+        SnackBar(content: Text('OTP has been sent to +977 $phone'))
+            .show(context);
+        setState(() {
+          isLoading = false;
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // print("rrrrrrrrrrrrrrrrrrrrrrrr$verificationId");
+      },
+    );
+  }
+
+  void autoLogin() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString('token');
+    // print("authhhhhhhhhhhhhhhhhhhhh " + token.toString());
+    if (token != null) {
+      _navigateToScreen(true);
+    } else {
+      _navigateToScreen(false);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    autoLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +135,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                       margin: const EdgeInsets.only(left: 0, right: 23),
                       child: TextFormField(
                         maxLength: 10,
+
                         // validator phone number
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -85,6 +150,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
 
                         onChanged: (value) {
                           phoneNumber = value;
+                          EnterPhoneScreen.phoneNumber = value;
                         },
 
                         style:
@@ -117,32 +183,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> {
                   var connectivityResult =
                       await (Connectivity().checkConnectivity());
                   if (connectivityResult == ConnectivityResult.wifi) {
-                    await auth.setSettings(
-                        appVerificationDisabledForTesting: true);
-                    await auth.verifyPhoneNumber(
-                      phoneNumber: '+977$phoneNumber',
-                      timeout: const Duration(seconds: 60),
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) {},
-                      verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        EnterPhoneScreen.verify = verificationId;
-                        Navigator.pushNamed(context, '/verify_otp');
-                        SnackBar(
-                                content: Text(
-                                    'OTP has been sent to +977 $phoneNumber'))
-                            .show(context);
-                        setState(() {
-                          isLoading = false;
-                        });
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
-                    );
+                    phoneVerification(phoneNumber);
                   } else {
                     setState(() {
                       isLoading = false;
                     });
-                    const SnackBar(content: Text('No internet connection'))
+                    SnackBar(content: Text('No internet connection'))
                         .show(context);
                   }
                 }
